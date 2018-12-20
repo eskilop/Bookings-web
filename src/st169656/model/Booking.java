@@ -5,8 +5,9 @@ import st169656.dao.BookingsImplementation;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Objects;
 
-public class Booking extends BookingsImplementation <Booking>
+public class Booking extends BookingsImplementation
   {
     private int booking_id;
     private Teacher booking_from;
@@ -30,6 +31,45 @@ public class Booking extends BookingsImplementation <Booking>
         this.booking_date = booking_date;
       }
 
+    public static void create ()
+      {
+        exec ("CREATE TABLE IF NOT EXISTS `" + DB_NAME + " `.`bookings`(\n" +
+            "    ` booking_id ` INT NOT NULL AUTO_INCREMENT,\n" +
+            "    ` booking_from ` INT NOT NULL,\n" +
+            "    ` booking_date ` TIMESTAMP NOT NULL,\n" +
+            "    PRIMARY KEY(` booking_id `),\n" +
+            "    FOREIGN KEY(` booking_from `) REFERENCES ` teachers `(` teacher_id `)\n" +
+            ") ENGINE = InnoDB;");
+      }
+
+    public static void destroy ()
+      {
+        exec ("DROP TABLE `" + DB_NAME + " `.`bookings`");
+      }
+
+    public static Booking get (int target_id)
+      {
+        return search ("SELECT * FROM `" + DB_NAME + "`.`bookings` WHERE booking_id=" + target_id + ";", Booking::fromResultSet).get (0);
+      }
+
+    public static Booking fromResultSet (ResultSet set)
+      {
+        Booking ret = null;
+        try
+          {
+            ret = new Booking (
+                set.getInt ("booking_id"),
+                set.getInt ("booking_from"),
+                set.getTimestamp ("booking_date")
+            );
+          }
+        catch (SQLException sqle)
+          {
+            System.err.println ("SQL Error, can't get parameters from resultset");
+          }
+        return ret;
+      }
+
     public int getId ()
       {
         return booking_id;
@@ -43,31 +83,6 @@ public class Booking extends BookingsImplementation <Booking>
     public Timestamp getDate ()
       {
         return booking_date;
-      }
-
-
-    @Override
-    public void create ()
-      {
-        exec ("CREATE TABLE `" + DB_NAME + " `.`bookings`(\n" +
-            "    ` booking_id ` INT NOT NULL AUTO_INCREMENT,\n" +
-            "    ` booking_from ` INT NOT NULL,\n" +
-            "    ` booking_date ` TIMESTAMP NOT NULL,\n" +
-            "    PRIMARY KEY(` booking_id `),\n" +
-            "    FOREIGN KEY(` booking_from `) REFERENCES ` teachers `(` teacher_id `)\n" +
-            ") ENGINE = InnoDB;");
-      }
-
-    @Override
-    public void destroy ()
-      {
-        exec ("DROP TABLE `" + DB_NAME + " `.`bookings`");
-      }
-
-    @Override
-    public Booking get (int target_id)
-      {
-        return search ("SELECT * FROM `" + DB_NAME + "`.`bookings` WHERE booking_id=" + target_id + ";").get (0);
       }
 
     @Override
@@ -95,12 +110,19 @@ public class Booking extends BookingsImplementation <Booking>
       }
 
     @Override
-    public Booking createObj (ResultSet set) throws SQLException
+    public boolean equals (Object o)
       {
-        return new Booking (
-            set.getInt ("booking_id"),
-            set.getInt ("booking_from"),
-            set.getTimestamp ("booking_date")
-        );
+        if (this == o) return true;
+        if (! (o instanceof Booking)) return false;
+        Booking booking = (Booking) o;
+        return booking_id == booking.booking_id &&
+            Objects.equals (booking_from, booking.booking_from) &&
+            Objects.equals (booking_date, booking.booking_date);
+      }
+
+    @Override
+    public int hashCode ()
+      {
+        return Objects.hash (booking_id, booking_from, booking_date);
       }
   }

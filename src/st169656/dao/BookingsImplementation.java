@@ -2,18 +2,18 @@ package st169656.dao;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.function.Function;
 
-public abstract class BookingsImplementation <T extends BookingsImplementation> implements BookingsDAO <T>
+public abstract class BookingsImplementation implements BookingsDAO
   {
     protected static final String DB_NAME = "prenotazioni";
     private static final String DB_UNAME = "root";
     private static final String DB_PASSWD = "";
     private static final String URI = "jdbc:mysql://localhost:3306/" + DB_NAME;
 
-    private Statement statement;
-
-    public void exec (String anyquery)
+    protected static void exec (String anyquery)
       {
+        Statement statement;
         Connection connection = null;
         try
           {
@@ -23,7 +23,8 @@ public abstract class BookingsImplementation <T extends BookingsImplementation> 
           }
         catch (SQLException sqle)
           {
-            System.err.println ("Error while opening connection");
+            System.err.println ("EXEC: Error while opening connection");
+            sqle.printStackTrace ();
           }
         finally
           {
@@ -33,50 +34,62 @@ public abstract class BookingsImplementation <T extends BookingsImplementation> 
               }
             catch (SQLException sqle)
               {
-                System.err.println ("Error while closing connection");
+                System.err.println ("EXEC:CLOSE: Error while closing connection");
+                sqle.printStackTrace ();
               }
           }
       }
 
-    @Override
-    public ArrayList <T> search (String condition)
+    public static <T> ArrayList <T> search (String condition, Function <ResultSet, T> function)
       {
-        ArrayList <T> result = new ArrayList <> ();
+        Statement statement;
+        ResultSet s = null;
+        ArrayList <T> objs = new ArrayList <> ();
         Connection connection = null;
         try
           {
             connection = DriverManager.getConnection (URI, DB_UNAME, DB_PASSWD);
             statement = connection.createStatement ();
-            ResultSet s = statement.executeQuery (condition);
+            s = statement.executeQuery (condition);
 
-            if (! s.isFirst ())
-              s.first ();
-
-            do
+            if (! isSetEmpty (s))
               {
-                result.add (createObj (s));
-              } while (s.next ());
+                do
+                  {
+                    objs.add (function.apply (s));
+                  }
+                while (s.next ());
+              }
           }
         catch (SQLException sqle)
           {
-            System.err.println ("Error while opening connection");
+            System.err.println ("SEARCH: Error while opening connection");
+            sqle.printStackTrace ();
           }
         finally
           {
             try
               {
+                s.close ();
                 connection.close ();
               }
             catch (SQLException sqle)
               {
-                System.err.println ("Error while closing connection");
+                System.err.println ("SEARCH:CLOSE: Error while closing connection");
+                sqle.printStackTrace ();
               }
           }
-        return result;
+        return objs;
       }
 
-    public void save (String update)
+    private static boolean isSetEmpty (ResultSet s) throws SQLException
       {
+        return ! s.first ();
+      }
+
+    protected void save (String update)
+      {
+        Statement statement;
         Connection connection = null;
         try
           {
@@ -86,7 +99,8 @@ public abstract class BookingsImplementation <T extends BookingsImplementation> 
           }
         catch (SQLException sqle)
           {
-            System.err.println ("Error while opening connection");
+            System.err.println ("SAVE: Error while opening connection");
+            sqle.printStackTrace ();
           }
         finally
           {
@@ -96,7 +110,8 @@ public abstract class BookingsImplementation <T extends BookingsImplementation> 
               }
             catch (SQLException sqle)
               {
-                System.err.println ("Error while closing connection");
+                System.err.println ("SAVE:CLOSE: Error while closing connection");
+                sqle.printStackTrace ();
               }
           }
 

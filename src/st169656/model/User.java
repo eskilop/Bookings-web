@@ -4,8 +4,9 @@ import st169656.dao.BookingsImplementation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 
-public class User extends BookingsImplementation <User>
+public class User extends BookingsImplementation
   {
     private int id;
     private String username;
@@ -37,6 +38,46 @@ public class User extends BookingsImplementation <User>
         this.role = new Role (role);
       }
 
+    public static void create ()
+      {
+        exec ("CREATE TABLE IF NOT EXISTS `" + DB_NAME + "`.`users`(\n" +
+            "    `user_id` INT NOT NULL AUTO_INCREMENT,\n" +
+            "    `user_name` TEXT NOT NULL,\n" +
+            "    `user_password` TEXT NOT NULL,\n" +
+            "    `user_role` INT NOT NULL,\n" +
+            "    PRIMARY KEY(`user_id`),\n" +
+            "    FOREIGN KEY(`user_role`) REFERENCES `roles`(`role_id`)\n" +
+            ") ENGINE = InnoDB;)");
+      }
+
+    public static void destroy ()
+      {
+        exec ("DROP TABLE `" + DB_NAME + "`.`users`;");
+      }
+
+    public static User get (int target_id)
+      {
+        return search ("SELECT * FROM `" + DB_NAME + "`.`users` WHERE user_id=" + target_id + ";", User::fromResultSet).get (0);
+      }
+
+    public static User fromResultSet (ResultSet set)
+      {
+        User ret = null;
+        try
+          {
+            ret = new User (
+                set.getInt ("user_id"),
+                set.getString ("user_name"),
+                set.getString ("user_password"),
+                set.getInt ("user_role"));
+          }
+        catch (SQLException sqle)
+          {
+            System.err.println ("SQL Error, can't get parameters from resultset");
+          }
+        return ret;
+      }
+
     public int getId ()
       {
         return id;
@@ -55,31 +96,6 @@ public class User extends BookingsImplementation <User>
     public Role getRole ()
       {
         return role;
-      }
-
-    @Override
-    public void create ()
-      {
-        exec ("CREATE TABLE `" + DB_NAME + "`.`users`(\n" +
-            "    `user_id` INT NOT NULL AUTO_INCREMENT,\n" +
-            "    `user_name` TEXT NOT NULL,\n" +
-            "    `user_password` TEXT NOT NULL,\n" +
-            "    `user_role` INT NOT NULL,\n" +
-            "    PRIMARY KEY(`user_id`),\n" +
-            "    FOREIGN KEY(`user_role`) REFERENCES `roles`(`role_id`)\n" +
-            ") ENGINE = InnoDB;)");
-      }
-
-    @Override
-    public void destroy ()
-      {
-        exec ("DROP TABLE `" + DB_NAME + "`.`users`;");
-      }
-
-    @Override
-    public User get (int target_id)
-      {
-        return search ("SELECT * FROM `" + DB_NAME + "`.`users` WHERE user_id=" + target_id + ";").get (0);
       }
 
     @Override
@@ -108,12 +124,20 @@ public class User extends BookingsImplementation <User>
       }
 
     @Override
-    public User createObj (ResultSet set) throws SQLException
+    public boolean equals (Object o)
       {
-        return new User (
-            set.getInt ("user_id"),
-            set.getString ("user_name"),
-            set.getString ("user_password"),
-            set.getInt ("user_role"));
+        if (this == o) return true;
+        if (! (o instanceof User)) return false;
+        User user = (User) o;
+        return getId () == user.getId () &&
+            Objects.equals (getUsername (), user.getUsername ()) &&
+            Objects.equals (getPassword (), user.getPassword ()) &&
+            Objects.equals (getRole (), user.getRole ());
+      }
+
+    @Override
+    public int hashCode ()
+      {
+        return Objects.hash (getId (), getUsername (), getPassword (), getRole ());
       }
   }

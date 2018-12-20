@@ -4,8 +4,10 @@ import st169656.dao.BookingsImplementation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Objects;
 
-public class Role extends BookingsImplementation <Role>
+public class Role extends BookingsImplementation
   {
     private int id;
     private String title;
@@ -29,6 +31,46 @@ public class Role extends BookingsImplementation <Role>
         this.title = title;
       }
 
+    public static void create ()
+      {
+        exec ("CREATE TABLE IF NOT EXISTS `" + DB_NAME + "`.`roles` ( " +
+            "`role_id` INT NOT NULL AUTO_INCREMENT , " +
+            "`role_title` TEXT NOT NULL , " +
+            "PRIMARY KEY (`role_id`)) ENGINE = InnoDB;");
+      }
+
+    public static void destroy ()
+      {
+        exec ("DROP TABLE `" + DB_NAME + "`.`roles`;");
+      }
+
+    public static Role get (int target_id)
+      {
+        ArrayList<Role> roles = search ("SELECT * FROM `" + DB_NAME + "`.`roles` WHERE role_id = " + target_id + ";", Role::fromResultSet);
+        if (roles.size () < 1)
+          return null;
+        else
+          return roles.get (0);
+      }
+
+    public static Role fromResultSet (ResultSet set)
+      {
+        Role ret = null;
+        try
+          {
+            ret = new Role (
+                set.getInt ("role_id"),
+                set.getString ("role_title")
+            );
+          }
+        catch (SQLException sqle)
+          {
+            System.err.println ("Role::fromResultSet: SQL Error, can't get parameters from resultset");
+            sqle.printStackTrace ();
+          }
+        return ret;
+      }
+
     public int getId ()
       {
         return id;
@@ -37,28 +79,6 @@ public class Role extends BookingsImplementation <Role>
     public String getTitle ()
       {
         return title;
-      }
-
-
-    @Override
-    public void create ()
-      {
-        exec ("CREATE TABLE `" + DB_NAME + "`.`roles` ( " +
-            "`role_id` INT NOT NULL AUTO_INCREMENT , " +
-            "`role_title` TEXT NOT NULL , " +
-            "PRIMARY KEY (`role_id`)) ENGINE = InnoDB;");
-      }
-
-    @Override
-    public void destroy ()
-      {
-        exec ("DELETE FROM `" + DB_NAME + "`.`roles` WHERE role_id=" + id + ";");
-      }
-
-    @Override
-    public Role get (int target_id)
-      {
-        return search ("SELECT * FROM `" + DB_NAME + "`.`roles` WHERE role_id = " + target_id + ";").get (0);
       }
 
     @Override
@@ -81,15 +101,31 @@ public class Role extends BookingsImplementation <Role>
     @Override
     public void delete ()
       {
-        exec ("DELETE FROM `\" + DB_NAME + \"`.`roles` WHERE role_id = "+id+";");
+        exec ("DELETE FROM `" + DB_NAME + "`.`roles` WHERE role_id = " + id + ";");
       }
 
     @Override
-    public Role createObj (ResultSet set) throws SQLException
+    public boolean equals (Object o)
       {
-        return new Role (
-            set.getInt ("role_id"),
-            set.getString ("role_title")
-        );
+        if (this == o) return true;
+        if (! (o instanceof Role)) return false;
+        Role role = (Role) o;
+        return getId () == role.getId () &&
+            Objects.equals (getTitle (), role.getTitle ());
+      }
+
+    @Override
+    public int hashCode ()
+      {
+        return Objects.hash (getId (), getTitle ());
+      }
+
+    @Override
+    public String toString ()
+      {
+        return "Role{" +
+            "id=" + id +
+            ", title='" + title + '\'' +
+            '}';
       }
   }
