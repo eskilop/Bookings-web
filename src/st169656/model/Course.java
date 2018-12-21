@@ -4,20 +4,13 @@ import st169656.dao.BookingsImplementation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Course extends BookingsImplementation
   {
     private int id;
     private String courseTitle;
-
-    public Course (int _id)
-      {
-        Course tmp = get (_id);
-        if (tmp == null) throw new IllegalStateException ("No such course found");
-        this.id = tmp.getId ();
-        this.courseTitle = tmp.courseTitle;
-      }
 
     public Course (int _id, String title)
       {
@@ -27,6 +20,7 @@ public class Course extends BookingsImplementation
 
     public Course (String title)
       {
+        this.id = solveId ("course_id", "courses");
         this.courseTitle = title;
       }
 
@@ -35,7 +29,7 @@ public class Course extends BookingsImplementation
         Course ret = null;
         try
           {
-            ret = new Course (set.getString ("course_title"));
+            ret = new Course (set.getInt ("course_id"), set.getString ("course_title"));
           }
         catch (SQLException sqle)
           {
@@ -49,7 +43,7 @@ public class Course extends BookingsImplementation
         exec ("CREATE TABLE IF NOT EXISTS " +
             "`" + DB_NAME + "`.`courses` ( " +
             "`course_id` INT NOT NULL AUTO_INCREMENT , " +
-            "`course_title` INT(24) NOT NULL , " +
+            "`course_title` VARCHAR(24) NOT NULL , " +
             "PRIMARY KEY (`course_id`)) ENGINE = InnoDB;");
       }
 
@@ -60,7 +54,11 @@ public class Course extends BookingsImplementation
 
     public static Course get (int target_id)
       {
-        return search ("SELECT * FROM `" + DB_NAME + "`.`courses` WHERE course_id = " + target_id + ";", Course::fromResultSet).get (0);
+        ArrayList <Course> courses = search ("SELECT * FROM `" + DB_NAME + "`.`courses` WHERE course_id = " + target_id + ";", Course::fromResultSet);
+        if (courses.size () < 1)
+          return null;
+        else
+          return courses.get (0);
       }
 
     public int getId ()
@@ -79,7 +77,7 @@ public class Course extends BookingsImplementation
         if (this.exists ())
           save ("UPDATE `" + DB_NAME + "`.`courses` SET course_title=\"" + courseTitle + "\" WHERE course_id=" + id + ";");
         else
-          save ("INSERT INTO `" + DB_NAME + "`.`courses` (title) VALUES " + courseTitle + ";");
+          save ("INSERT INTO `" + DB_NAME + "`.`courses` (course_id, course_title) VALUES (" + id + ", \"" + courseTitle + "\");");
       }
 
     @Override

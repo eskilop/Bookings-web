@@ -4,20 +4,13 @@ import st169656.dao.BookingsImplementation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class State extends BookingsImplementation
   {
     private int state_id;
     private String state_title;
-
-    public State (int id)
-      {
-        State tmp = get (id);
-        if (tmp == null) throw new IllegalStateException ("No such role");
-        this.state_id = tmp.getId ();
-        this.state_title = tmp.getTitle ();
-      }
 
     public State (int id, String title)
       {
@@ -27,6 +20,7 @@ public class State extends BookingsImplementation
 
     public State (String title)
       {
+        this.state_id = solveId ("state_id", "states");
         this.state_title = title;
       }
 
@@ -45,7 +39,11 @@ public class State extends BookingsImplementation
 
     public static State get (int target_id)
       {
-        return search ("SELECT * FROM `" + DB_NAME + "`.`states` WHERE state_id = " + target_id + ";", State::fromResultSet).get (0);
+        ArrayList <State> states = search ("SELECT * FROM `" + DB_NAME + "`.`states` WHERE state_id = " + target_id + ";", State::fromResultSet);
+        if (states.size () < 1)
+          return null;
+        else
+          return states.get (0);
       }
 
     public static State fromResultSet (ResultSet set)
@@ -82,8 +80,8 @@ public class State extends BookingsImplementation
           save ("UPDATE `" + DB_NAME + "`.`states` SET " +
               "state_title=\"" + state_title + "\" WHERE state_id=" + state_id + ";");
         else
-          save ("INSERT INTO `\" + DB_NAME + \"`.`states` (state_title) " +
-              "VALUES (\"" + state_title + "\");");
+          save ("INSERT INTO `" + DB_NAME + "`.`states` (state_id, state_title) " +
+              "VALUES (" + state_id + ", \"" + state_title + "\");");
       }
 
     @Override
@@ -95,7 +93,7 @@ public class State extends BookingsImplementation
     @Override
     public void delete ()
       {
-        exec ("DELETE FROM `\" + DB_NAME + \"`.`states` WHERE state_id = " + state_id + ";");
+        exec ("DELETE FROM `" + DB_NAME + "`.`states` WHERE state_id = " + state_id + ";");
       }
 
     @Override

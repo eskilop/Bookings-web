@@ -4,6 +4,7 @@ import st169656.dao.BookingsImplementation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class User extends BookingsImplementation
@@ -13,21 +14,12 @@ public class User extends BookingsImplementation
     private String password;
     private Role role;
 
-    public User (int id)
-      {
-        User tmp = get (id);
-        if (tmp == null) throw new IllegalStateException ("No such user");
-        this.id = tmp.getId ();
-        this.username = tmp.getUsername ();
-        this.password = tmp.getPassword ();
-        this.role = tmp.getRole ();
-      }
-
     public User (String username, String password, int role)
       {
+        this.id = solveId ("user_id", "users");
         this.username = username;
         this.password = password;
-        this.role = new Role (role);
+        this.role = Role.get (role);
       }
 
     public User (int id, String username, String password, int role)
@@ -35,7 +27,7 @@ public class User extends BookingsImplementation
         this.id = id;
         this.username = username;
         this.password = password;
-        this.role = new Role (role);
+        this.role = Role.get (role);
       }
 
     public static void create ()
@@ -47,7 +39,7 @@ public class User extends BookingsImplementation
             "    `user_role` INT NOT NULL,\n" +
             "    PRIMARY KEY(`user_id`),\n" +
             "    FOREIGN KEY(`user_role`) REFERENCES `roles`(`role_id`)\n" +
-            ") ENGINE = InnoDB;)");
+            ") ENGINE = InnoDB;");
       }
 
     public static void destroy ()
@@ -57,7 +49,11 @@ public class User extends BookingsImplementation
 
     public static User get (int target_id)
       {
-        return search ("SELECT * FROM `" + DB_NAME + "`.`users` WHERE user_id=" + target_id + ";", User::fromResultSet).get (0);
+        ArrayList <User> users = search ("SELECT * FROM `" + DB_NAME + "`.`users` WHERE user_id=" + target_id + ";", User::fromResultSet);
+        if (users.size () < 1)
+          return null;
+        else
+          return users.get (0);
       }
 
     public static User fromResultSet (ResultSet set)
@@ -105,10 +101,10 @@ public class User extends BookingsImplementation
           save ("UPDATE `" + DB_NAME + "`.`users` SET " +
               "user_name=\"" + username + "\", " +
               "user_password=\"" + password + "\", " +
-              "user_role=");
+              "user_role="+role.getId ());
         else
-          save ("INSERT INTO `" + DB_NAME + "`.`users` (user_name, user_password, user_role) " +
-              "VALUES (\"" + username + "\", \"" + password + "\", " + role.getId () + ")");
+          save ("INSERT INTO `" + DB_NAME + "`.`users` (user_id, user_name, user_password, user_role) " +
+              "VALUES (" + id + ", \"" + username + "\", \"" + password + "\", " + role.getId () + ")");
       }
 
     @Override

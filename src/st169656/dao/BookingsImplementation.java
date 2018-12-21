@@ -87,33 +87,71 @@ public abstract class BookingsImplementation implements BookingsDAO
         return ! s.first ();
       }
 
-    protected void save (String update)
+    protected static Integer solveId (String what, String table)
       {
         Statement statement;
+        ResultSet s = null;
+        int id = 0;
         Connection connection = null;
         try
           {
             connection = DriverManager.getConnection (URI, DB_UNAME, DB_PASSWD);
             statement = connection.createStatement ();
-            statement.executeUpdate (update);
+            s = statement.executeQuery ("SELECT MAX(" + what + ") FROM `" + DB_NAME + "`.`" + table + "`;");
+
+            if (! isSetEmpty (s))
+              {
+                id = s.getInt ("MAX("+what+")") + 1;
+              }
           }
         catch (SQLException sqle)
           {
-            System.err.println ("SAVE: Error while opening connection");
+            System.err.println ("SolveID: Error while opening connection");
             sqle.printStackTrace ();
           }
         finally
           {
             try
               {
+                s.close ();
                 connection.close ();
               }
             catch (SQLException sqle)
               {
-                System.err.println ("SAVE:CLOSE: Error while closing connection");
+                System.err.println ("SolveID:CLOSE: Error while closing connection");
                 sqle.printStackTrace ();
               }
           }
-
+        return id;
       }
-  }
+
+        protected void save (String update)
+        {
+          Statement statement;
+          Connection connection = null;
+          try
+            {
+              connection = DriverManager.getConnection (URI, DB_UNAME, DB_PASSWD);
+              statement = connection.createStatement ();
+              statement.executeUpdate (update);
+            }
+          catch (SQLException sqle)
+            {
+              System.err.println ("SAVE: Error while opening connection");
+              sqle.printStackTrace ();
+            }
+          finally
+            {
+              try
+                {
+                  connection.close ();
+                }
+              catch (SQLException sqle)
+                {
+                  System.err.println ("SAVE:CLOSE: Error while closing connection");
+                  sqle.printStackTrace ();
+                }
+            }
+
+        }
+      }

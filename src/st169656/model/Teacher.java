@@ -4,6 +4,7 @@ import st169656.dao.BookingsImplementation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Teacher extends BookingsImplementation
@@ -13,22 +14,12 @@ public class Teacher extends BookingsImplementation
     private String surname;
     private Course course;
 
-    public Teacher (int _id)
-      {
-        Teacher tmp = get (_id);
-        if (tmp == null) throw new IllegalStateException ("No such teacher");
-        this.id = tmp.getId ();
-        this.name = tmp.getName ();
-        this.surname = tmp.getSurname ();
-        this.course = tmp.getCourse ();
-
-      }
-
     public Teacher (String name, String surname, int course_id)
       {
+        this.id = solveId ("teacher_id", "teachers");
         this.name = name;
         this.surname = surname;
-        this.course = new Course (course_id);
+        this.course = Course.get (course_id);
       }
 
     public Teacher (int id, String name, String surname, int course_id)
@@ -36,7 +27,7 @@ public class Teacher extends BookingsImplementation
         this.id = id;
         this.name = name;
         this.surname = surname;
-        this.course = new Course (course_id);
+        this.course = Course.get (course_id);
       }
 
     public static void create ()
@@ -57,7 +48,11 @@ public class Teacher extends BookingsImplementation
 
     public static Teacher get (int target_id)
       {
-        return search ("SELECT * FROM `" + DB_NAME + "`.`teachers` WHERE teacher_id = " + target_id + ";", Teacher::fromResultSet).get (0);
+        ArrayList <Teacher> teachers = search ("SELECT * FROM `" + DB_NAME + "`.`teachers` WHERE teacher_id = " + target_id + ";", Teacher::fromResultSet);
+        if (teachers.size () < 1)
+          return null;
+        else
+          return teachers.get (0);
       }
 
     public static Teacher fromResultSet (ResultSet set)
@@ -108,10 +103,10 @@ public class Teacher extends BookingsImplementation
               "teacher_surname=\"" + surname + "\"," +
               "teacher_course=" + getCourse ().getId () + " WHERE teacher_id = " + id + ";");
         else
-          exec ("INSERT INTO `" + DB_NAME + "`.`teachers` (teacher_name, teacher_surname, teacher_course) " +
-              "VALUES (\"" +
+          exec ("INSERT INTO `" + DB_NAME + "`.`teachers` (teacher_id, teacher_name, teacher_surname, teacher_course) " +
+              "VALUES (" + id + ", \"" +
               getName () + "\", \"" +
-              getSurname () + "\", \"" +
+              getSurname () + "\", " +
               getCourse ().getId () +
               ");");
       }

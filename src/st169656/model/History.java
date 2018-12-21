@@ -5,42 +5,33 @@ import st169656.dao.BookingsImplementation;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class History extends BookingsImplementation
   {
     private int history_id;
-    private int booking_id;
-    private int booked_by;
+    private Booking booking_id;
+    private User booked_by;
     private State booking_state;
     private Timestamp action_date;
-
-    public History (int history_id)
-      {
-        History tmp = get (history_id);
-        if (tmp == null) throw new IllegalStateException ("No such history piece");
-        this.history_id = tmp.getId ();
-        this.booking_id = tmp.getBookingId ();
-        this.booked_by = tmp.getBookedBy ();
-        this.booking_state = tmp.getState ();
-        this.action_date = tmp.getActionDate ();
-      }
 
     public History (int history_id, int booking_id, int booked_by, int booking_state, Timestamp action_date)
       {
         this.history_id = history_id;
-        this.booking_id = booking_id;
-        this.booked_by = booked_by;
-        this.booking_state = new State (booking_state);
-        this.action_date = action_date;
+        this.booking_id = Booking.get (booking_id);
+        this.booked_by = User.get (booked_by);
+        this.booking_state = State.get (booking_state);
+        this.action_date = new Timestamp (truncateMillis (action_date.getTime ()));
       }
 
     public History (int booking_id, int booked_by, int booking_state, Timestamp action_date)
       {
-        this.booking_id = booking_id;
-        this.booked_by = booked_by;
-        this.booking_state = new State (booking_state);
-        this.action_date = action_date;
+        this.history_id = solveId ("history_id", "history");
+        this.booking_id = Booking.get (booking_id);
+        this.booked_by = User.get (booked_by);
+        this.booking_state = State.get (booking_state);
+        this.action_date = new Timestamp (truncateMillis (action_date.getTime ()));
       }
 
     public static void create ()
@@ -65,7 +56,11 @@ public class History extends BookingsImplementation
 
     public static History get (int target_id)
       {
-        return search ("SELECT * FROM `" + DB_NAME + "`.`history` WHERE history_id=" + target_id + ";", History::fromResultSet).get (0);
+        ArrayList <History> histories = search ("SELECT * FROM `" + DB_NAME + "`.`history` WHERE history_id=" + target_id + ";", History::fromResultSet);
+        if (histories.size () < 1)
+          return null;
+        else
+          return histories.get (0);
       }
 
     public static History fromResultSet (ResultSet set)
@@ -88,17 +83,22 @@ public class History extends BookingsImplementation
         return ret;
       }
 
+    private long truncateMillis (long datetime)
+      {
+        return 1000 * (datetime / 1000);
+      }
+
     public int getId ()
       {
         return history_id;
       }
 
-    public int getBookingId ()
+    public Booking getBookingId ()
       {
         return booking_id;
       }
 
-    public int getBookedBy ()
+    public User getBookedBy ()
       {
         return booked_by;
       }
@@ -118,13 +118,13 @@ public class History extends BookingsImplementation
       {
         if (this.exists ())
           save ("UPDATE `" + DB_NAME + "`.`history` SET " +
-              "booking_id=" + booking_id + ", " +
-              "booked_by=" + booked_by + ", " +
+              "booking_id=" + booking_id.getId () + ", " +
+              "booked_by=" + booked_by.getId () + ", " +
               "booking_state=" + booking_state.getId () + ", " +
-              "action_date=" + action_date + "WHERE history_id = " + history_id + ";");
+              "action_date=\"" + action_date + "\" WHERE history_id = " + history_id + ";");
         else
-          save ("INSERT INTO `" + DB_NAME + "`.`history` (booking_id, booked_by, booking_state, action_date) " +
-              "VALUES (" + booking_id + ", " + booked_by + ", " + booking_state.getId () + ", " + action_date + ");");
+          save ("INSERT INTO `" + DB_NAME + "`.`history` (history_id, booking_id, booked_by, booking_state, action_date) " +
+              "VALUES (" + history_id + ", " + booking_id.getId () + ", " + booked_by.getId () + ", " + booking_state.getId () + ", \"" + action_date + "\");");
       }
 
     @Override
@@ -146,8 +146,8 @@ public class History extends BookingsImplementation
         if (! (o instanceof History)) return false;
         History history = (History) o;
         return history_id == history.history_id &&
-            booking_id == history.booking_id &&
-            booked_by == history.booked_by &&
+            Objects.equals (booking_id, history.booking_id) &&
+            Objects.equals (booked_by, history.booked_by) &&
             Objects.equals (booking_state, history.booking_state) &&
             Objects.equals (action_date, history.action_date);
       }

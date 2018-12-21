@@ -12,14 +12,6 @@ public class Role extends BookingsImplementation
     private int id;
     private String title;
 
-    public Role (int id)
-      {
-        Role tmp = get (id);
-        if (tmp == null) throw new IllegalStateException ("No such role");
-        this.id = tmp.getId ();
-        this.title = tmp.getTitle ();
-      }
-
     public Role (int id, String title)
       {
         this.id = id;
@@ -28,6 +20,7 @@ public class Role extends BookingsImplementation
 
     public Role (String title)
       {
+        this.id = solveId ("role_id", "roles");
         this.title = title;
       }
 
@@ -46,7 +39,7 @@ public class Role extends BookingsImplementation
 
     public static Role get (int target_id)
       {
-        ArrayList<Role> roles = search ("SELECT * FROM `" + DB_NAME + "`.`roles` WHERE role_id = " + target_id + ";", Role::fromResultSet);
+        ArrayList <Role> roles = search ("SELECT * FROM `" + DB_NAME + "`.`roles` WHERE role_id = " + target_id + ";", Role::fromResultSet);
         if (roles.size () < 1)
           return null;
         else
@@ -88,8 +81,8 @@ public class Role extends BookingsImplementation
           save ("UPDATE `" + DB_NAME + "`.`roles` SET " +
               "role_title=\"" + title + "\" WHERE role_id=" + id + ";");
         else
-          save ("INSERT INTO `" + DB_NAME + "`.`roles` (role_title) " +
-              "VALUES (\"" + title + "\");");
+          save ("INSERT INTO `" + DB_NAME + "`.`roles` (role_id, role_title) " +
+              "VALUES (" + id + ", \"" + title + "\");");
       }
 
     @Override
