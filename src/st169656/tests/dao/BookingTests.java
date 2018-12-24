@@ -139,7 +139,7 @@ class BookingTests
           Course.create ();
           Teacher.create ();
           Booking.create ();
-          Booking.search ("SELECT * FROM `prenotazioni`.`bookings`;", Booking::fromResultSet);
+          assertEquals (0, Booking.search ("SELECT * FROM `prenotazioni`.`bookings`;").size ());
           Booking.destroy ();
           Teacher.destroy ();
           Course.destroy ();

@@ -48,7 +48,7 @@ public class Teacher extends BookingsImplementation
 
     public static Teacher get (int target_id)
       {
-        ArrayList <Teacher> teachers = search ("SELECT * FROM `" + DB_NAME + "`.`teachers` WHERE teacher_id = " + target_id + ";", Teacher::fromResultSet);
+        ArrayList <Teacher> teachers = search ("SELECT * FROM `" + DB_NAME + "`.`teachers` WHERE teacher_id = " + target_id + ";");
         if (teachers.size () < 1)
           return null;
         else
@@ -111,6 +111,11 @@ public class Teacher extends BookingsImplementation
               ");");
       }
 
+    public static ArrayList<Teacher> search(String search)
+      {
+        return search (search, Teacher::fromResultSet);
+      }
+
     @Override
     public boolean exists ()
       {
@@ -139,5 +144,16 @@ public class Teacher extends BookingsImplementation
     public int hashCode ()
       {
         return Objects.hash (getId (), getName (), getSurname (), getCourse ());
+      }
+
+    @Override
+    public String toString ()
+      {
+        return "Teacher{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", surname='" + surname + '\'' +
+            ", course=" + course +
+            '}';
       }
   }

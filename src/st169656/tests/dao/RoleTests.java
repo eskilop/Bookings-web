@@ -71,7 +71,7 @@ class RoleTests
         assertDoesNotThrow (() ->
         {
           Role.create ();
-          assertEquals (0, Role.search ("SELECT * FROM `prenotazioni`.`roles`;", Role::fromResultSet).size ());
+          assertEquals (0, Role.search ("SELECT * FROM `prenotazioni`.`roles`;").size ());
           Role.destroy ();
         });
       }

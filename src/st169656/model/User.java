@@ -49,7 +49,7 @@ public class User extends BookingsImplementation
 
     public static User get (int target_id)
       {
-        ArrayList <User> users = search ("SELECT * FROM `" + DB_NAME + "`.`users` WHERE user_id=" + target_id + ";", User::fromResultSet);
+        ArrayList <User> users = search ("SELECT * FROM `" + DB_NAME + "`.`users` WHERE user_id=" + target_id + ";");
         if (users.size () < 1)
           return null;
         else
@@ -113,6 +113,11 @@ public class User extends BookingsImplementation
         return get (id) != null;
       }
 
+    public static ArrayList<User> search(String search)
+      {
+        return search (search, User::fromResultSet);
+      }
+
     @Override
     public void delete ()
       {
@@ -135,5 +140,16 @@ public class User extends BookingsImplementation
     public int hashCode ()
       {
         return Objects.hash (getId (), getUsername (), getPassword (), getRole ());
+      }
+
+    @Override
+    public String toString ()
+      {
+        return "User{" +
+            "id=" + id +
+            ", username='" + username + '\'' +
+            ", password='" + password + '\'' +
+            ", role=" + role +
+            '}';
       }
   }

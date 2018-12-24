@@ -39,7 +39,7 @@ public class Role extends BookingsImplementation
 
     public static Role get (int target_id)
       {
-        ArrayList <Role> roles = search ("SELECT * FROM `" + DB_NAME + "`.`roles` WHERE role_id = " + target_id + ";", Role::fromResultSet);
+        ArrayList <Role> roles = search ("SELECT * FROM `" + DB_NAME + "`.`roles` WHERE role_id = " + target_id + ";");
         if (roles.size () < 1)
           return null;
         else
@@ -83,6 +83,11 @@ public class Role extends BookingsImplementation
         else
           save ("INSERT INTO `" + DB_NAME + "`.`roles` (role_id, role_title) " +
               "VALUES (" + id + ", \"" + title + "\");");
+      }
+
+    public static ArrayList<Role> search(String search)
+      {
+        return search (search, Role::fromResultSet);
       }
 
     @Override

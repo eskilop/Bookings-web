@@ -39,7 +39,7 @@ public class State extends BookingsImplementation
 
     public static State get (int target_id)
       {
-        ArrayList <State> states = search ("SELECT * FROM `" + DB_NAME + "`.`states` WHERE state_id = " + target_id + ";", State::fromResultSet);
+        ArrayList <State> states = search ("SELECT * FROM `" + DB_NAME + "`.`states` WHERE state_id = " + target_id + ";");
         if (states.size () < 1)
           return null;
         else
@@ -90,6 +90,11 @@ public class State extends BookingsImplementation
         return get (state_id) != null;
       }
 
+    public static ArrayList<State> search(String search)
+      {
+        return search (search, State::fromResultSet);
+      }
+
     @Override
     public void delete ()
       {
@@ -110,5 +115,14 @@ public class State extends BookingsImplementation
     public int hashCode ()
       {
         return Objects.hash (state_id, state_title);
+      }
+
+    @Override
+    public String toString ()
+      {
+        return "State{" +
+            "state_id=" + state_id +
+            ", state_title='" + state_title + '\'' +
+            '}';
       }
   }

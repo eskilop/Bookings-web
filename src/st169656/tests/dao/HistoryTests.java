@@ -222,7 +222,7 @@ class HistoryTests
           Booking.create ();
           History.create ();
 
-          assertEquals (0, History.search ("SELECT * FROM `prenotazioni`.`history`;", History::fromResultSet).size ());
+          assertEquals (0, History.search ("SELECT * FROM `prenotazioni`.`history`;").size ());
 
           History.destroy ();
           Booking.destroy ();

@@ -70,7 +70,7 @@ class StateTests
         assertDoesNotThrow (() ->
         {
           State.create ();
-          assertEquals (0, State.search ("SELECT * FROM `prenotazioni`.`states`;", State::fromResultSet).size ());
+          assertEquals (0, State.search ("SELECT * FROM `prenotazioni`.`states`;").size ());
           State.destroy ();
         });
       }

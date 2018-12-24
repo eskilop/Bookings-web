@@ -54,7 +54,7 @@ public class Course extends BookingsImplementation
 
     public static Course get (int target_id)
       {
-        ArrayList <Course> courses = search ("SELECT * FROM `" + DB_NAME + "`.`courses` WHERE course_id = " + target_id + ";", Course::fromResultSet);
+        ArrayList <Course> courses = search ("SELECT * FROM `" + DB_NAME + "`.`courses` WHERE course_id = " + target_id + ";");
         if (courses.size () < 1)
           return null;
         else
@@ -86,6 +86,11 @@ public class Course extends BookingsImplementation
         return get (id) != null;
       }
 
+    public static ArrayList<Course> search(String search)
+      {
+        return search (search, Course::fromResultSet);
+      }
+
     @Override
     public void delete ()
       {
@@ -106,5 +111,14 @@ public class Course extends BookingsImplementation
     public int hashCode ()
       {
         return Objects.hash (getId (), getCourseTitle ());
+      }
+
+    @Override
+    public String toString ()
+      {
+        return "Course{" +
+            "id=" + id +
+            ", courseTitle='" + courseTitle + '\'' +
+            '}';
       }
   }

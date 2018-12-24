@@ -40,7 +40,7 @@ public abstract class BookingsImplementation implements BookingsDAO
           }
       }
 
-    public static <T> ArrayList <T> search (String condition, Function <ResultSet, T> function)
+    protected static <T> ArrayList <T> search (String condition, Function <ResultSet, T> function)
       {
         Statement statement;
         ResultSet s = null;

@@ -108,7 +108,7 @@ class UserTests
           Role.create ();
           User.create ();
 
-          assertEquals (0, User.search ("SELECT * FROM `prenotazioni`.`users`;", User::fromResultSet).size ());
+          assertEquals (0, User.search ("SELECT * FROM `prenotazioni`.`users`;").size ());
 
           User.destroy ();
           Role.destroy ();

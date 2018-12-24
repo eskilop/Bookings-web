@@ -56,7 +56,7 @@ public class History extends BookingsImplementation
 
     public static History get (int target_id)
       {
-        ArrayList <History> histories = search ("SELECT * FROM `" + DB_NAME + "`.`history` WHERE history_id=" + target_id + ";", History::fromResultSet);
+        ArrayList <History> histories = search ("SELECT * FROM `" + DB_NAME + "`.`history` WHERE history_id=" + target_id + ";");
         if (histories.size () < 1)
           return null;
         else
@@ -133,6 +133,11 @@ public class History extends BookingsImplementation
         return get (history_id) != null;
       }
 
+    public static ArrayList<History> search(String search)
+      {
+        return search (search, History::fromResultSet);
+      }
+
     @Override
     public void delete ()
       {
@@ -156,5 +161,17 @@ public class History extends BookingsImplementation
     public int hashCode ()
       {
         return Objects.hash (history_id, booking_id, booked_by, booking_state, action_date);
+      }
+
+    @Override
+    public String toString ()
+      {
+        return "History{" +
+            "history_id=" + history_id +
+            ", booking_id=" + booking_id +
+            ", booked_by=" + booked_by +
+            ", booking_state=" + booking_state +
+            ", action_date=" + action_date +
+            '}';
       }
   }

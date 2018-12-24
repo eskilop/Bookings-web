@@ -46,11 +46,16 @@ public class Booking extends BookingsImplementation
 
     public static Booking get (int target_id)
       {
-        ArrayList <Booking> bookings = search ("SELECT * FROM `" + DB_NAME + "`.`bookings` WHERE booking_id=" + target_id + ";", Booking::fromResultSet);
+        ArrayList <Booking> bookings = search ("SELECT * FROM `" + DB_NAME + "`.`bookings` WHERE booking_id=" + target_id + ";");
         if (bookings.size () < 1)
           return null;
         else
           return bookings.get (0);
+      }
+
+    public static ArrayList<Booking> search(String search)
+      {
+        return search (search, Booking::fromResultSet);
       }
 
     public static Booking fromResultSet (ResultSet set)
@@ -130,5 +135,15 @@ public class Booking extends BookingsImplementation
     public int hashCode ()
       {
         return Objects.hash (booking_id, booking_from, booking_date);
+      }
+
+    @Override
+    public String toString ()
+      {
+        return "Booking{" +
+            "booking_id=" + booking_id +
+            ", booking_from=" + booking_from +
+            ", booking_date=" + booking_date +
+            '}';
       }
   }

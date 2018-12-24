@@ -72,7 +72,7 @@ class CourseTests
         assertDoesNotThrow (() ->
         {
           Course.create ();
-          assertEquals (0, Course.search ("SELECT * FROM `prenotazioni`.`courses`;", Course::fromResultSet).size ());
+          assertEquals (0, Course.search ("SELECT * FROM `prenotazioni`.`courses`;").size ());
           Course.destroy ();
         });
       }

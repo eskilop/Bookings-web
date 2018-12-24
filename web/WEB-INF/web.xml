@@ -4,11 +4,11 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
     <servlet>
-        <servlet-name>Controller</servlet-name>
-        <servlet-class>st169656.Controller</servlet-class>
+        <servlet-name>ApiServlet</servlet-name>
+        <servlet-class>st169656.ApiServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>Controller</servlet-name>
-        <url-pattern>/home</url-pattern>
+        <servlet-name>ApiServlet</servlet-name>
+        <url-pattern>/api</url-pattern>
     </servlet-mapping>
 </web-app>

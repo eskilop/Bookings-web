@@ -103,7 +103,7 @@ class TeacherTests
           Course.create ();
           Teacher.create ();
 
-          assertEquals (0, Role.search ("SELECT * FROM `prenotazioni`.`teachers`;", Role::fromResultSet).size ());
+          assertEquals (0, Role.search ("SELECT * FROM `prenotazioni`.`teachers`;").size ());
 
           Teacher.destroy ();
           Course.destroy ();
