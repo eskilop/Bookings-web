@@ -1,3 +1,3 @@
 angular.module('BookingsApp', [
-  "bookingChooser"
+  'bookingChooser', 'ngMaterial', 'ngMessages'
 ]);

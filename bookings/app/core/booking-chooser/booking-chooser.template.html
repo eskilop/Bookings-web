@@ -1,3 +1,67 @@
-<pre>
-  {{$ctrl.bookings}}
-</pre>
+<div>
+  <md-toolbar class="md-hue-2">
+    <div class="md-toolbar-tools">
+      <h1 flex md-truncate>Bookings</h1>
+
+      <md-button class="md-icon-button" aria-label="Book">
+        <md-icon md-svg-icon="assets/img/round-assignment_turned_in-24px.svg"></md-icon>
+      </md-button>
+  
+      <md-button class="md-icon-button" aria-label="History">
+        <md-icon md-svg-icon="assets/img/round-history-24px.svg"></md-icon>
+      </md-button>
+  
+      <md-button class="md-icon-button" aria-label="Logout">
+        <md-icon md-svg-icon="assets/img/round-exit_to_app-24px.svg"></md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+
+  <md-whiteframe class="md-whiteframe-4dp" flex="100" layout layout-align="center center">
+
+      <md-input-container>
+        <label>Subject</label>
+        <md-select ng-model="$ctrl.q1">
+          <md-option ng-value=" ">None</md-option>
+          <md-option ng-repeat="course in $ctrl.courses" ng-value="course">
+            {{course}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+    
+      <md-datepicker ng-model="$ctrl.qd" 
+                     md-placeholder="Enter date" 
+                     ng-change="$ctrl.onDateChanged()"></md-datepicker>
+
+    <md-input-container>
+        <label>Hour</label>
+        <md-select ng-model="$ctrl.q3">
+          <md-option ng-value=" ">None</md-option>
+          <md-option ng-repeat="h in ['3:00', '4:00', '5:00', '6:00', '7:00']" ng-value="h">
+            {{h}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+
+  </md-whiteframe>
+
+  <md-content class="md-padding" layout-xs="column" layout="row" layout-padding layout-wrap layout-fill style="padding-bottom: 5%;" ng-cloak>
+    <md-card ng-repeat="booking in $ctrl.bookings | filter: $ctrl.q1 | filter: $ctrl.qd | filter: $ctrl.q3">
+      <md-card-title>
+        <md-card-title-text>
+          <span class="md-headline">{{booking.booking_from.course.courseTitle}}</span>
+          <span class="md-subhead">
+            <h3>{{booking.booking_from.name}} {{booking.booking_from.surname}}</h3>
+            il {{booking.booking_date}}
+          </span>
+        </md-card-title-text>
+      </md-card-title>
+      <md-card-actions layout="row" layout-align="end center">
+        <md-button>Prenota</md-button>
+        <md-checkbox ng-model="booking.selected" aria-label="Seleziona">
+          {{booking.selected}}
+        </md-checkbox>
+      </md-card-actions>
+    </md-card>
+  </md-content>
+</div>
