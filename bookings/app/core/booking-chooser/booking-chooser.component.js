@@ -98,7 +98,12 @@ component('bookingChooser', {
           delete bkng.selected;
         });
         //send all idS for bookings
-        console.log(filterSelected);
+
+        self.bookings = self.bookings.filter(function (elem) {
+          return !selected.includes(elem);
+        });
+
+        console.log(selected);
       }
 
     });
