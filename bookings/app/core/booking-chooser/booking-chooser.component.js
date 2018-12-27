@@ -2,14 +2,19 @@ angular.
 module('bookingChooser').
 component('bookingChooser', {
   templateUrl: "core/booking-chooser/booking-chooser.template.html",
-  controller: ['$http', function BookingChooserController($http) {
+  controller: ['$http', '$cookies', '$mdDialog', function BookingChooserController($http, $cookies, $mdDialog) {
     var self = this;
+    
+    this.username = $cookies.get('username');
+
+    if (this.username === undefined) {
+        $cookies.put('username', "Anonymous");
+      }
 
     $http.get("http://localhost:8080/api?method=getBookings").then(function (response) {
       self.bookings = response.data;
       self.courses = new Array();
       self.teachers = new Array();
-
 
       // get all courses
       self.bookings.forEach(bkng => {
@@ -90,8 +95,13 @@ component('bookingChooser', {
   
       self.bookSelected = function() {
         // postRequest
-        // check if user is logged in
         var selected = self.getSelected();
+        if (!self.userLogged()) {
+          // temp save selected bookings
+          $cookies.putObject('selectedBookings', selected);
+          self.showLoginDialog();
+        }
+
         selected.forEach(bkng => {
           // remove added attributes, so server can build the corrispondant object
           delete bkng.completeName;
@@ -107,6 +117,25 @@ component('bookingChooser', {
       }
 
     });
+
+    self.showLoginDialog = function(ev) {
+      // Appending dialog to document.body to cover sidenav in docs app
+      var confirm = $mdDialog.confirm()
+            .title('You must be logged in to continue')
+            .textContent('To book a course and use other functions of the app you must be logged in')
+            .ariaLabel('You aren\'t logged in')
+            .targetEvent(ev)
+            .ok('Log in')
+            .cancel('Cancel');
+  
+      $mdDialog.show(confirm).then(function() {
+        window.location.href = "/#!/login"
+      }, function() {});
+    };
+  
+    self.userLogged = function() {
+      return !(self.username === undefined || self.username === 'Anonymous');
+    }
 
     self.onDateChanged = function() {
       var options = { year: 'numeric', month: 'short', day: 'numeric' };

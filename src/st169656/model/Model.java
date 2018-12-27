@@ -148,7 +148,7 @@ public class Model
           }
       }
 
-    private String strengthen (String password)
+    public String strengthen (String password)
       {
         return hash (salt (password, "NaCl"));
       }

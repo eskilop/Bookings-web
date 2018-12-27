@@ -1,3 +1,8 @@
 angular.module('BookingsApp', [
-  'bookingChooser', 'ngMaterial', 'ngMessages'
+  'login',
+  'bookingChooser', 
+  'ngMaterial', 
+  'ngMessages', 
+  'ngRoute', 
+  'ngCookies'
 ]);

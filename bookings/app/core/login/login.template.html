@@ -1,0 +1,25 @@
+  <div layout="column" style="width: 25%;margin: 15% auto 15% auto;">
+    <md-input-container class="md-block" style="width: 100%">
+      <label>Username</label>
+      <input md-maxlength="24" required name="name" ng-model="$ctrl.user.name"/>
+
+      <div ng-messages="userForm.name.$error">
+        <div ng-message="required">Name is required.</div>
+        <div ng-message="md-maxlength">The name has to be less than 24 characters long.</div>
+      </div>
+    </md-input-container>
+
+    <md-input-container class="md-block" style="width: 100%">
+      <label>Password</label>
+      <input required type="password" name="password" ng-model="$ctrl.user.password" />
+
+      <div ng-messages="userForm.name.$error">
+        <div ng-message="required">Password is required.</div>
+      </div>
+    </md-input-container>
+
+    <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+      <md-button ng-click="$ctrl.login()" ng-disabled="$ctrl.disableLogin()" class="md-raised md-primary" style="width: 100%">Login</md-button>
+      <md-button ng-click="$ctrl.continue()" class="md-raised" style="width: 100%">Guest</md-button>
+    </section>
+  </div>

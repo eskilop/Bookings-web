@@ -1,1 +1,1 @@
-angular.module('bookingChooser', []);
+angular.module('bookingChooser', ['ngRoute', 'ngCookies']);

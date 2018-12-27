@@ -3,7 +3,7 @@
     <div class="md-toolbar-tools">
       <h1 flex md-truncate>Bookings</h1>
 
-      <md-button class="md-icon-button" aria-label="Book" ng-click="$ctrl.bookSelected()">
+      <md-button ng-disabled="!($ctrl.getSelected().length > 0)" class="md-icon-button" aria-label="Book" ng-click="$ctrl.bookSelected()">
         <md-icon md-svg-icon="assets/img/round-assignment_turned_in-24px.svg"></md-icon>
       </md-button>
   
@@ -11,7 +11,9 @@
         <md-icon md-svg-icon="assets/img/round-history-24px.svg"></md-icon>
       </md-button>
   
-      <md-button class="md-icon-button" aria-label="Logout">
+      <h4 ng-show="$ctrl.userLogged()">Hi, {{$ctrl.username}}</h4>
+
+      <md-button ng-show="$ctrl.userLogged()" class="md-icon-button" aria-label="Logout">
         <md-icon md-svg-icon="assets/img/round-exit_to_app-24px.svg"></md-icon>
       </md-button>
     </div>

@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="it" ng-app="BookingsApp" ng-cloak>
+<html lang="it" ng-app="BookingsApp">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Prenotazioni</title>
 
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.11/angular-material.min.css">
     <link rel="stylesheet" href="app.css" />
 
     <!-- Angular Material requires Angular.js Libraries -->
@@ -13,17 +13,26 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular-animate.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular-aria.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular-messages.min.js"></script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular-cookies.js"></script>
     <script src="lib/angular-route/angular-route.js"></script>
 
 
     <!-- Angular Material Library -->
     <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.11/angular-material.min.js"></script>
   
+    <script src="lib/md5.min.js"></script>
+
     <script src="core/booking-chooser/booking-chooser.module.js"></script>
     <script src="core/booking-chooser/booking-chooser.component.js"></script>
+
+    <script src="core/login/login.module.js"></script>
+    <script src="core/login/login.component.js"></script>
+
     <script src="app.module.js"></script>
+    <script src="app.config.js"></script>
   </head>
   <body>
-    <booking-chooser></booking-chooser>
+    <div ng-view></div>
   </body>
 </html>
