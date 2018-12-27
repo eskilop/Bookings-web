@@ -22,22 +22,28 @@ angular.
           }
         };
 
-        var udata = {username: self.user.name, userpass: md5(self.salt(self.user.password))};
-
-        $http.post("http://localhost:8080/api?method=login", udata, cfg).
-        then(function (data) {
-              if (data.data.key) {
-                $cookies.put("loggedUserId", data.data.value.id);
-                $cookies.put("loggedUserUsername", data.data.value.username);
-                self.continue();
-              }
-              else {
-                console.log(data.data);
-                self.showDialog(data.data.value);
-              }
-          }, function (data) {
-              console.log(data);
-          });
+        const prohibited = ['\u200b', '', ' ', undefined];
+        
+        if (prohibited.includes(self.user.name) || prohibited.includes(self.user.password)) {
+          self.showDialog("Incorrect input, one or more fields were left blank")
+        }
+        else {
+          var udata = {username: self.user.name, userpass: md5(self.salt(self.user.password))};
+          $http.post("http://localhost:8080/api?method=login", udata, cfg).
+          then(function (data) {
+                if (data.data.key) {
+                  $cookies.put("loggedUserId", data.data.value.id);
+                  $cookies.put("loggedUserUsername", data.data.value.username);
+                  self.continue();
+                }
+                else {
+                  console.log(data.data);
+                  self.showDialog(data.data.value);
+                }
+              }, function (data) {
+                console.log(data);
+            });
+          }
       }
 
       this.salt = function (word) {
