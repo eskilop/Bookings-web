@@ -4,12 +4,14 @@ component('bookingChooser', {
   templateUrl: "core/booking-chooser/booking-chooser.template.html",
   controller: ['$http', function BookingChooserController($http) {
     var self = this;
-    this.booked = new Array();
 
     $http.get("http://localhost:8080/api?method=getBookings").then(function (response) {
       self.bookings = response.data;
       self.courses = new Array();
+      self.teachers = new Array();
 
+
+      // get all courses
       self.bookings.forEach(bkng => {
         var curr = bkng.booking_from.course.courseTitle;
         if (!(curr === self.courses[self.courses.length-1])) {
@@ -17,44 +19,75 @@ component('bookingChooser', {
         }
       });
 
-      console.log("Bookings Ready");
-      console.log("undefined: ");
-      console.log(self.bookings === undefined || self.availableCourses === undefined);
+      // build completeNameProperty && get all teachers
+      self.bookings.forEach(bkng => {
+        var curr = bkng.booking_from.name + " " + bkng.booking_from.surname;
+        bkng.completeName = curr;
+        if (!(curr === self.teachers[self.teachers.length-1])) {
+          self.teachers.push(curr);
+        }
+      });
+
+      self.coursesFor = function (teacher) {
+        var courses = new Array();
+        var filteredBookings = self.bookings.filter(function(bkng) {
+          return bkng.completeName === teacher;
+        });
+
+        if (teacher === undefined) {
+          return self.courses;
+        }
+        else {
+          filteredBookings.forEach(bkng => {
+            if (!(bkng.booking_from.course.courseTitle === courses[courses.length-1])) {
+              courses.push(bkng.booking_from.course.courseTitle);
+            }
+          });
+          return courses;
+        }
+      }
+
+      self.teachersFor = function (course) {
+        var teachers = new Array();
+        var filteredBookings = self.bookings.filter(function(bkng) {
+          return bkng.booking_from.course.courseTitle === course;
+        });
+
+        if (course === undefined) {
+          return self.teachers;
+        }
+        else {
+          filteredBookings.forEach(bkng => {
+            if (!(bkng.completeName === teachers[teachers.length-1])) {
+              teachers.push(bkng.completeName);
+            }
+          });
+          if (teachers.length === 1)
+            self.qt = teachers[0];
+          return teachers;
+        }
+      }
+  
+      self.bookSelected = function() {
+        // postRequest
+  
+        // check if user is logged in
+  
+        var filterSelected = self.bookings.filter(bkng => bkng.selected);
+        filterSelected.forEach(bkng => {
+          // remove added attributes, so server can build the corrispondant object
+          delete bkng.completeName;
+          delete bkng.selected;
+        });
+        //send all idS for bookings
+        console.log(filterSelected);
+      }
+
     });
-
-    self.teachersFor = function (course) {
-      var teachers = new Set();
-      var filteredBookings = self.bookings.filter(bkng => {bkng.booking_from.course.courseTitle === course});
-
-      filteredBookings.forEach(bkng => {
-        teachers.add(bkng.booking_from.name + " " + bkng.booking_from.surname );
-      });
-      return teachers;
-    }
-
-    self.datesFor = function (teacher, course) {
-      var dates = new Set();
-      var filteredBookings = self.bookings.filter(bkng => {bkng.booking_from.name + " " + bkng.booking_from.surname === teacher && bkng.booking_from.course.courseTitle === course});
-
-      filteredBookings.forEach(bkng => {
-        dates.add(bkng.booking_date);
-      });
-      return dates;
-    }
-
-    self.searchBooking = function (teacher, course, date) {
-      return self.bookings.filter(bkng => { // expecting 1, but can fail.
-        bkng.booking_from.name === teacher.split(" ")[0] &&
-        bkng.booking_from.surname === teacher.split(" ")[1] &&
-        bkng.booking_from.course.courseTitle === course &&
-        bkng.booking_date === date;
-      });
-    }
 
     self.onDateChanged = function() {
       var options = { year: 'numeric', month: 'short', day: 'numeric' };
       self.qd = self.qd.toLocaleDateString("en-US", options);
-      console.log(self.qd);
     }
   }]
 });
