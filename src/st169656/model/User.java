@@ -34,10 +34,10 @@ public class User extends BookingsImplementation
       {
         exec ("CREATE TABLE IF NOT EXISTS `" + DB_NAME + "`.`users`(\n" +
             "    `user_id` INT NOT NULL AUTO_INCREMENT,\n" +
-            "    `user_name` TEXT NOT NULL,\n" +
-            "    `user_password` TEXT NOT NULL,\n" +
+            "    `user_name` VARCHAR(25) NOT NULL,\n" +
+            "    `user_password` VARCHAR(32) NOT NULL,\n" +
             "    `user_role` INT NOT NULL,\n" +
-            "    PRIMARY KEY(`user_id`),\n" +
+            "    PRIMARY KEY(`user_id`, `user_name`),\n" +
             "    FOREIGN KEY(`user_role`) REFERENCES `roles`(`role_id`)\n" +
             ") ENGINE = InnoDB;");
       }

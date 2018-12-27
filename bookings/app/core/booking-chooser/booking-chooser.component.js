@@ -5,10 +5,14 @@ component('bookingChooser', {
   controller: ['$http', '$cookies', '$mdDialog', function BookingChooserController($http, $cookies, $mdDialog) {
     var self = this;
     
-    this.username = $cookies.get('username');
+    self.loggedUserId = $cookies.get("loggedUserId");
+    self.loggedUserUsername = $cookies.get("loggedUserUsername");
 
-    if (this.username === undefined) {
-        $cookies.put('username', "Anonymous");
+    this.loggedUser = {id: self.loggedUserId, username: self.loggedUserUsername};
+
+    if (this.loggedUser === undefined) {
+        $cookies.put("loggedUserId", undefined);
+        $cookies.put("loggedUserUsername", "Anonymous");
       }
 
     $http.get("http://localhost:8080/api?method=getBookings").then(function (response) {
@@ -50,7 +54,7 @@ component('bookingChooser', {
           });
           return courses;
         }
-      }
+      };
 
       self.teachersFor = function (course) {
         var teachers = new Array();
@@ -71,14 +75,13 @@ component('bookingChooser', {
             self.qt = teachers[0];
           return teachers;
         }
-      }
+      };
 
       self.getSelected = function() {
         return self.bookings.filter(bkng => bkng.selected);
-      }
+      };
 
-      self.filterSameDate = function ()
-      {
+      self.filterSameDate = function () {
         var selected = self.getSelected();
 
         if (selected === [])
@@ -91,7 +94,7 @@ component('bookingChooser', {
             return !(dates.includes(bkng.booking_date) && !(selected.includes(bkng)));
           });
         }
-      }
+      };
   
       self.bookSelected = function() {
         // postRequest
@@ -114,9 +117,15 @@ component('bookingChooser', {
         });
 
         console.log(selected);
-      }
+      };
 
     });
+
+    self.invalidateSession = function() {
+      $cookies.remove("loggedUserId");
+      $cookies.remove("loggedUserUsername");
+      self.loggedUser = {id:undefined, username:"Anonymous"};
+    };
 
     self.showLoginDialog = function(ev) {
       // Appending dialog to document.body to cover sidenav in docs app
@@ -134,12 +143,12 @@ component('bookingChooser', {
     };
   
     self.userLogged = function() {
-      return !(self.username === undefined || self.username === 'Anonymous');
-    }
+      return !(self.loggedUser.id === undefined && self.loggedUser.username === 'Anonymous');
+    };
 
     self.onDateChanged = function() {
       var options = { year: 'numeric', month: 'short', day: 'numeric' };
       self.qd = self.qd.toLocaleDateString("en-US", options);
-    }
+    };
   }]
 });

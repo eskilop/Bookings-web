@@ -11,9 +11,9 @@
         <md-icon md-svg-icon="assets/img/round-history-24px.svg"></md-icon>
       </md-button>
   
-      <h4 ng-show="$ctrl.userLogged()">Hi, {{$ctrl.username}}</h4>
+      <h4 ng-show="$ctrl.userLogged()">Hi, {{$ctrl.loggedUser.username}}</h4>
 
-      <md-button ng-show="$ctrl.userLogged()" class="md-icon-button" aria-label="Logout">
+      <md-button ng-click="$ctrl.invalidateSession()" ng-show="$ctrl.userLogged()" class="md-icon-button" aria-label="Logout">
         <md-icon md-svg-icon="assets/img/round-exit_to_app-24px.svg"></md-icon>
       </md-button>
     </div>

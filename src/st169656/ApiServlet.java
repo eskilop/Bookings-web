@@ -62,15 +62,21 @@ public class ApiServlet extends HttpServlet
               ArrayList <User> res = User.search ("SELECT * FROM `prenotazioni`.`users` WHERE " +
                   "user_name=\"" + u.getUsername () + "\" and user_password=\"" + u.getUserpass () + "\";");
 
+              if (res.size () == 0)
+                {
+                  resp.getWriter ().write (gson.toJson (new Pair <Boolean, String> (false, "Credentials mismatch, check your inputs then try again")));
+                }
+
               if (res.size () == 1)
                 {
                   if (res.get (0).getUsername ().equals (u.getUsername ()) && res.get (0).getPassword ().equals (u.getUserpass ()))
-                    resp.getWriter ().write (gson.toJson (res.get (0)));
+                    resp.getWriter ().write (gson.toJson (new Pair<Boolean, User> (true, res.get (0))));
                   else
-                    resp.getWriter ().write (gson.toJson (new Pair <Boolean, String> (false, "Not equal")));
+                    resp.getWriter ().write (gson.toJson (new Pair <Boolean, String> (false, "Credentials mismatch, check your inputs then try again")));
                 }
-              else
-                resp.getWriter ().write (gson.toJson (new Pair <Boolean, String> (false, "Size mismatch")));
+
+              if (res.size () > 1)
+                resp.getWriter ().write (gson.toJson (new Pair <Boolean, String> (false, "Multiple users found. We have an even worse problem now.")));
               break;
 
             default:

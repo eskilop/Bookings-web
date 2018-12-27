@@ -2,7 +2,7 @@ angular.
   module('login').
   component('login', {
     templateUrl: 'core/login/login.template.html',
-    controller: ['$cookies', '$http', function ($cookies, $http) {
+    controller: ['$cookies', '$http', '$mdDialog', function ($cookies, $http, $mdDialog) {
       var self = this;
 
       this.user = {
@@ -22,12 +22,19 @@ angular.
           }
         };
 
-        var data = {username: self.user.name, userpass: md5(self.salt(self.user.password))};
+        var udata = {username: self.user.name, userpass: md5(self.salt(self.user.password))};
 
-        $http.post("http://localhost:8080/api?method=login", data, cfg).
+        $http.post("http://localhost:8080/api?method=login", udata, cfg).
         then(function (data) {
-              $cookies.put('username', self.user.name);
-              console.log(data);
+              if (data.data.key) {
+                $cookies.put("loggedUserId", data.data.value.id);
+                $cookies.put("loggedUserUsername", data.data.value.username);
+                self.continue();
+              }
+              else {
+                console.log(data.data);
+                self.showDialog(data.data.value);
+              }
           }, function (data) {
               console.log(data);
           });
@@ -45,6 +52,16 @@ angular.
         return saltedword;
       }
 
+      self.showDialog = function(text) {
+        $mdDialog.show(
+          $mdDialog.alert()
+            .clickOutsideToClose(true)
+            .title('Wrong credentials')
+            .textContent(text)
+            .ariaLabel('Credentials Mismatch')
+            .ok('Ok')
+        );
+      };
       this.continue = function() {
         window.location.href = "/#!/home";
       }

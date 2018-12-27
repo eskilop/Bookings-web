@@ -112,7 +112,7 @@ public class Model
         teachers.add (t5);
 
         int todayY = Calendar.getInstance ().get (Calendar.YEAR);
-        int todayM = Calendar.getInstance ().get (Calendar.MONTH);
+        int todayM = Calendar.getInstance ().get (Calendar.MONTH)+1;
         int today = Calendar.getInstance ().get (Calendar.DAY_OF_MONTH);
 
         // Get the number of days in that month
@@ -120,8 +120,6 @@ public class Model
         int maxdays = yearMonthObject.lengthOfMonth ();
 
         Booking b;
-
-        System.out.println (teachers.size ());
 
         // Assume all teachers in all slots
         for (Teacher t : teachers)
