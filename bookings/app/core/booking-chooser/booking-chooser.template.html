@@ -60,7 +60,7 @@
   </md-whiteframe>
 
   <md-content class="md-padding" layout-xs="column" layout="row" layout-padding layout-wrap layout-fill style="padding-bottom: 5%;" ng-cloak>
-    <md-card ng-repeat="booking in $ctrl.bookings | filter: $ctrl.qs | filter: $ctrl.qt | filter: $ctrl.qd | filter: $ctrl.qh">
+    <md-card ng-repeat="booking in $ctrl.filterSameDate() | filter: $ctrl.qs | filter: $ctrl.qt | filter: $ctrl.qd | filter: $ctrl.qh">
       <md-card-title>
         <md-card-title-text>
           <span class="md-headline">{{booking.booking_from.course.courseTitle}}</span>

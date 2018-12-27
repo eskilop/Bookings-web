@@ -67,14 +67,32 @@ component('bookingChooser', {
           return teachers;
         }
       }
+
+      self.getSelected = function() {
+        return self.bookings.filter(bkng => bkng.selected);
+      }
+
+      self.filterSameDate = function ()
+      {
+        var selected = self.getSelected();
+
+        if (selected === [])
+          return self.bookings;
+        else {
+
+          var dates = selected.map(x => x.booking_date);
+
+          return self.bookings.filter(function (bkng) {
+            return !(dates.includes(bkng.booking_date) && !(selected.includes(bkng)));
+          });
+        }
+      }
   
       self.bookSelected = function() {
         // postRequest
-  
         // check if user is logged in
-  
-        var filterSelected = self.bookings.filter(bkng => bkng.selected);
-        filterSelected.forEach(bkng => {
+        var selected = self.getSelected();
+        selected.forEach(bkng => {
           // remove added attributes, so server can build the corrispondant object
           delete bkng.completeName;
           delete bkng.selected;
