@@ -3,6 +3,7 @@ package st169656.tests.dao;
 import org.junit.jupiter.api.Test;
 import st169656.model.Booking;
 import st169656.model.Course;
+import st169656.model.State;
 import st169656.model.Teacher;
 
 import java.awt.print.Book;
@@ -42,7 +43,7 @@ class BookingTests
           Teacher t = new Teacher (1, "Sample", "Sample", 1);
           t.save ();
 
-          Booking b = new Booking (1, t.getId (), new Timestamp (new Date ().getTime ()));
+          Booking b = new Booking (1, t.getId (), new Timestamp (new Date ().getTime ()), State.AVAILABLE);
           b.save ();
 
           Booking.destroy ();
@@ -67,7 +68,7 @@ class BookingTests
           t.save ();
 
 
-          Booking b = new Booking (1, t.getId (), new Timestamp (Calendar.getInstance ().getTime ().getTime ()));
+          Booking b = new Booking (1, t.getId (), new Timestamp (Calendar.getInstance ().getTime ().getTime ()), State.AVAILABLE);
           b.save ();
 
           assertEquals (b, Booking.get (b.getId ()));
@@ -93,7 +94,7 @@ class BookingTests
           Teacher t = new Teacher (1, "Sample", "Sample", 1);
           t.save ();
 
-          Booking b = new Booking (1, t.getId (), new Timestamp (Calendar.getInstance ().getTime ().getTime ()));
+          Booking b = new Booking (1, t.getId (), new Timestamp (Calendar.getInstance ().getTime ().getTime ()), State.AVAILABLE);
           b.save ();
 
           assertTrue (Booking.get (b.getId ()).exists ());
@@ -119,7 +120,7 @@ class BookingTests
           Teacher t = new Teacher (1, "Sample", "Sample", 1);
           t.save ();
 
-          Booking b = new Booking (1, t.getId (), new Timestamp (Calendar.getInstance ().getTime ().getTime ()));
+          Booking b = new Booking (1, t.getId (), new Timestamp (Calendar.getInstance ().getTime ().getTime ()), State.AVAILABLE);
           b.save ();
 
           b.delete ();

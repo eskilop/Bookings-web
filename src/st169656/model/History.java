@@ -93,7 +93,7 @@ public class History extends BookingsImplementation
         return history_id;
       }
 
-    public Booking getBookingId ()
+    public Booking getBooking ()
       {
         return booking_id;
       }
@@ -123,8 +123,8 @@ public class History extends BookingsImplementation
               "booking_state=" + booking_state.getId () + ", " +
               "action_date=\"" + action_date + "\" WHERE history_id = " + history_id + ";");
         else
-          save ("INSERT INTO `" + DB_NAME + "`.`history` (history_id, booking_id, booked_by, booking_state, action_date) " +
-              "VALUES (" + history_id + ", " + booking_id.getId () + ", " + booked_by.getId () + ", " + booking_state.getId () + ", \"" + action_date + "\");");
+          save ("INSERT INTO `" + DB_NAME + "`.`history` (booking_id, booked_by, booking_state, action_date) " +
+              "VALUES (" + booking_id.getId () + ", " + booked_by.getId () + ", " + booking_state.getId () + ", \"" + action_date + "\");");
       }
 
     @Override

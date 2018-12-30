@@ -4,13 +4,13 @@ component('bookingChooser', {
   templateUrl: "core/booking-chooser/booking-chooser.template.html",
   controller: ['$http', '$cookies', '$mdDialog', function BookingChooserController($http, $cookies, $mdDialog) {
     var self = this;
-    
-    self.loggedUserId = $cookies.get("loggedUserId");
-    self.loggedUserUsername = $cookies.get("loggedUserUsername");
 
-    this.loggedUser = {id: self.loggedUserId, username: self.loggedUserUsername};
+    this.loggedUser = {
+      id: $cookies.get("loggedUserId"), 
+      username: $cookies.get("loggedUserUsername") === undefined ? "Anonymous" : $cookies.get("loggedUserUsername")
+    };
 
-    if (this.loggedUser === undefined) {
+    if (this.loggedUser.id === undefined) {
         $cookies.put("loggedUserId", undefined);
         $cookies.put("loggedUserUsername", "Anonymous");
       }
@@ -109,6 +109,16 @@ component('bookingChooser', {
           // remove added attributes, so server can build the corrispondant object
           delete bkng.completeName;
           delete bkng.selected;
+
+          $http.get("http://localhost:8080/api?method=book&booking_id="+bkng.booking_id+"&by_user="+this.loggedUser.id).then(
+            function (response) {
+              console.log(response.data);
+            },
+            function (response) {
+              // show err
+              console.log(response.data);
+            }
+          );
         });
         //send all idS for bookings
 
@@ -138,13 +148,18 @@ component('bookingChooser', {
             .cancel('Cancel');
   
       $mdDialog.show(confirm).then(function() {
-        window.location.href = "/#!/login"
+        $cookies.put("oldRoute", "/#!/home")
+        window.location.href = "/#!/login";
       }, function() {});
     };
   
     self.userLogged = function() {
       return !(self.loggedUser.id === undefined && self.loggedUser.username === 'Anonymous');
     };
+
+    self.toHistory = function () {
+      window.location.href = "/#!/history";
+    }
 
     self.onDateChanged = function() {
       var options = { year: 'numeric', month: 'short', day: 'numeric' };

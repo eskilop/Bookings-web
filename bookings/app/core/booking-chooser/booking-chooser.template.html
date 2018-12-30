@@ -7,7 +7,7 @@
         <md-icon md-svg-icon="assets/img/round-assignment_turned_in-24px.svg"></md-icon>
       </md-button>
   
-      <md-button class="md-icon-button" aria-label="History">
+      <md-button ng-disabled="!($ctrl.userLogged())" class="md-icon-button" aria-label="History" ng-click="$ctrl.toHistory()">
         <md-icon md-svg-icon="assets/img/round-history-24px.svg"></md-icon>
       </md-button>
   

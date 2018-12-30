@@ -45,7 +45,7 @@ class HistoryTests
           Teacher t = new Teacher ("Sample", "Sample", c.getId ());
           t.save ();
 
-          Booking b = new Booking (t.getId (), new Timestamp (new Date ().getTime ()));
+          Booking b = new Booking (t.getId (), new Timestamp (new Date ().getTime ()), State.AVAILABLE);
           b.save ();
 
           Role r = new Role ("myRole");
@@ -89,7 +89,7 @@ class HistoryTests
           Teacher t = new Teacher ("Sample", "Sample", c.getId ());
           t.save ();
 
-          Booking b = new Booking (t.getId (), new Timestamp (new Date ().getTime ()));
+          Booking b = new Booking (t.getId (), new Timestamp (new Date ().getTime ()), State.AVAILABLE);
           b.save ();
 
           Role r = new Role ("myRole");
@@ -135,7 +135,7 @@ class HistoryTests
           Teacher t = new Teacher ("Sample", "Sample", c.getId ());
           t.save ();
 
-          Booking b = new Booking (t.getId (), new Timestamp (new Date ().getTime ()));
+          Booking b = new Booking (t.getId (), new Timestamp (new Date ().getTime ()), State.AVAILABLE);
           b.save ();
 
           Role r = new Role ("myRole");
@@ -181,7 +181,7 @@ class HistoryTests
           Teacher t = new Teacher ("Sample", "Sample", c.getId ());
           t.save ();
 
-          Booking b = new Booking (t.getId (), new Timestamp (new Date ().getTime ()));
+          Booking b = new Booking (t.getId (), new Timestamp (new Date ().getTime ()), State.AVAILABLE);
           b.save ();
 
           Role r = new Role ("myRole");

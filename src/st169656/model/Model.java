@@ -14,10 +14,11 @@ public class Model
   {
     private static Model instance = new Model ();
     private static boolean set = false;
+    private ArrayList <Integer> loggedUsers = new ArrayList <> ();
 
     private Model ()
       {
-        if (!set)
+        if (! set)
           {
             try
               {
@@ -34,6 +35,24 @@ public class Model
     public static Model getInstance ()
       {
         return instance;
+      }
+
+    public boolean isLogged (int user)
+      {
+        return loggedUsers.contains (user);
+      }
+
+    public void removeLogged (int user)
+      {
+        loggedUsers.remove (user);
+      }
+
+    public void addLogged (int user)
+      {
+        if (! loggedUsers.contains (user))
+          {
+            loggedUsers.add (user);
+          }
       }
 
     public void build ()
@@ -92,6 +111,13 @@ public class Model
         Course gene = new Course ("Genetics");
         gene.save ();
 
+        State booked = new State (State.BOOKED, "Booked");
+        State unavailable = new State (State.UNAVAILABLE, "Unavailable");
+        State available = new State (State.AVAILABLE, "Available");
+        booked.save ();
+        unavailable.save ();
+        available.save ();
+
 
         ArrayList <Teacher> teachers = new ArrayList <> ();
 
@@ -111,37 +137,47 @@ public class Model
         t5.save ();
         teachers.add (t5);
 
-        int todayY = Calendar.getInstance ().get (Calendar.YEAR);
-        int todayM = Calendar.getInstance ().get (Calendar.MONTH)+1;
-        int today = Calendar.getInstance ().get (Calendar.DAY_OF_MONTH);
-
-        // Get the number of days in that month
-        YearMonth yearMonthObject = YearMonth.of (todayY, todayM);
-        int maxdays = yearMonthObject.lengthOfMonth ();
 
         Booking b;
 
         // Assume all teachers in all slots
         for (Teacher t : teachers)
           {
-            System.out.println (t);
-            for (int i = today; i <= today + 7; i++)
+            int today = Calendar.getInstance ().get (Calendar.DAY_OF_MONTH);
+            int todayM = Calendar.getInstance ().get (Calendar.MONTH) + 1;
+            int todayY = Calendar.getInstance ().get (Calendar.YEAR);
+
+            // Get the number of days in that month
+            YearMonth yearMonthObject = YearMonth.of (todayY, todayM);
+            int maxdays = yearMonthObject.lengthOfMonth ();
+            for (int i = 0; i <= 5; i++)
               {
-                b = new Booking (t.getId (), Timestamp.valueOf (todayY + "-" + todayM + "-" + ((today + i) % maxdays) + " " + "15:00:00"));
-                b.save ();
+                if (today + 1 > maxdays)
+                  {
+                    today = (today + 1) % maxdays;
+                    if (todayM + 1 > 12)
+                      {
+                        todayM = (todayM + 1) % 12;
+                        todayY = todayY + 1;
+                      }
+                  }
+                else today += 1;
+
+                b = new Booking (t.getId (), Timestamp.valueOf (todayY + "-" + todayM + "-" + today + " " + "15:00:00"), State.AVAILABLE);
                 System.out.println (b);
-                b = new Booking (t.getId (), Timestamp.valueOf (todayY + "-" + todayM + "-" + ((today + i) % maxdays) + " " + "16:00:00"));
                 b.save ();
+                b = new Booking (t.getId (), Timestamp.valueOf (todayY + "-" + todayM + "-" + today + " " + "16:00:00"), State.AVAILABLE);
                 System.out.println (b);
-                b = new Booking (t.getId (), Timestamp.valueOf (todayY + "-" + todayM + "-" + ((today + i) % maxdays) + " " + "17:00:00"));
                 b.save ();
+                b = new Booking (t.getId (), Timestamp.valueOf (todayY + "-" + todayM + "-" + today + " " + "17:00:00"), State.AVAILABLE);
                 System.out.println (b);
-                b = new Booking (t.getId (), Timestamp.valueOf (todayY + "-" + todayM + "-" + ((today + i) % maxdays) + " " + "18:00:00"));
                 b.save ();
+                b = new Booking (t.getId (), Timestamp.valueOf (todayY + "-" + todayM + "-" + today + " " + "18:00:00"), State.AVAILABLE);
                 System.out.println (b);
-                b = new Booking (t.getId (), Timestamp.valueOf (todayY + "-" + todayM + "-" + ((today + i) % maxdays) + " " + "19:00:00"));
                 b.save ();
+                b = new Booking (t.getId (), Timestamp.valueOf (todayY + "-" + todayM + "-" + today + " " + "19:00:00"), State.AVAILABLE);
                 System.out.println (b);
+                b.save ();
               }
           }
       }

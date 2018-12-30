@@ -32,8 +32,9 @@ angular.
           $http.post("http://localhost:8080/api?method=login", udata, cfg).
           then(function (data) {
                 if (data.data.key) {
-                  $cookies.put("loggedUserId", data.data.value.id);
-                  $cookies.put("loggedUserUsername", data.data.value.username);
+                  var usr = JSON.parse(data.data.value);
+                  $cookies.put("loggedUserId", usr.id);
+                  $cookies.put("loggedUserUsername", usr.username);
                   self.continue();
                 }
                 else {
@@ -69,7 +70,8 @@ angular.
         );
       };
       this.continue = function() {
-        window.location.href = "/#!/home";
+        var oldRoute = $cookies.get("oldRoute");
+        window.location.href = oldRoute === undefined ? "/#!/home" : oldRoute;
       }
     }]
   });

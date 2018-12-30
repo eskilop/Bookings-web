@@ -1,0 +1,50 @@
+<div>
+  <md-toolbar class="md-hue-2">
+    <div class="md-toolbar-tools">
+        <md-button class="md-icon-button" aria-label="Back" ng-click="$ctrl.backHome()">
+          <md-icon md-svg-icon="assets/img/round-arrow_back-24px.svg"></md-icon>
+        </md-button>
+      <h1 flex md-truncate>Bookings</h1>
+      
+      <h4 ng-show="$ctrl.userLogged()">Hi, {{$ctrl.loggedUser.username}}</h4>
+      <md-button ng-click="$ctrl.invalidateSession()" ng-show="$ctrl.userLogged()" class="md-icon-button" aria-label="Logout">
+        <md-icon md-svg-icon="assets/img/round-exit_to_app-24px.svg"></md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  
+  <div style="margin: 16px">
+    <h1>Future</h1>
+    <md-content layout-xs="column" layout="row" layout-padding layout-wrap layout-fill ng-cloak>
+      <md-card ng-repeat="booking in $ctrl.incomingBookings">
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">{{booking.booking_from.course.courseTitle}}</span>
+            <span class="md-subhead">
+              <h3>{{booking.booking_from.name}} {{booking.booking_from.surname}}</h3>
+              il {{booking.booking_date}}
+            </span>
+          </md-card-title-text>
+        </md-card-title>
+        <md-card-actions layout="row" layout-align="start center">
+            <md-button md-no-ink class="md-primary" ng-click="$ctrl.unbook(booking.booking_id)">Cancel</md-button>
+        </md-card-actions>
+      </md-card>
+    </md-content>
+
+    <h1>Passate</h1>
+    <md-content layout-xs="column" layout="row" layout-padding layout-wrap layout-fill ng-cloak>
+      <md-card ng-repeat="booking in $ctrl.pastBookings">
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">{{booking.booking_from.course.courseTitle}}</span>
+            <span class="md-subhead">
+              <h3>{{booking.booking_from.name}} {{booking.booking_from.surname}}</h3>
+              il {{booking.booking_date}}
+            </span>
+          </md-card-title-text>
+        </md-card-title>
+      </md-card>
+    </md-content>
+  </div>
+</div>
