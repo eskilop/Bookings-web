@@ -15,8 +15,8 @@
   
   <div style="margin: 16px">
     <h1>Future</h1>
-    <md-content layout-xs="column" layout="row" layout-padding layout-wrap layout-fill ng-cloak>
-      <md-card ng-repeat="booking in $ctrl.incomingBookings">
+    <md-content class="md-padding" layout-xs="column" layout="row" layout-wrap flex>
+      <md-card flex="15" ng-repeat="booking in $ctrl.incomingBookings">
         <md-card-title>
           <md-card-title-text>
             <span class="md-headline">{{booking.booking_from.course.courseTitle}}</span>
@@ -33,8 +33,8 @@
     </md-content>
 
     <h1>Passate</h1>
-    <md-content layout-xs="column" layout="row" layout-padding layout-wrap layout-fill ng-cloak>
-      <md-card ng-repeat="booking in $ctrl.pastBookings">
+    <md-content class="md-padding" layout-xs="column" layout="row" layout-wrap flex>
+      <md-card flex="15" ng-repeat="booking in $ctrl.pastBookings">
         <md-card-title>
           <md-card-title-text>
             <span class="md-headline">{{booking.booking_from.course.courseTitle}}</span>
