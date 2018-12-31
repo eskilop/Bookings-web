@@ -5,14 +5,10 @@ angular.
     controller: ['$cookies', '$http', '$mdDialog', function($cookies, $http, $mdDialog) {
       var self = this;
 
-      this.loggedUser = {
-        id: $cookies.get("loggedUserId"), 
-        username: $cookies.get("loggedUserUsername") === undefined ? "Anonymous" : $cookies.get("loggedUserUsername")
-      };
+      this.loggedUser = $cookies.getObject("loggedUser");
 
       this.invalidateSession = function() {
-        $cookies.remove("loggedUserId");
-        $cookies.remove("loggedUserUsername");
+        $cookies.remove("loggedUser");
         self.loggedUser = {id:undefined, username:"Anonymous"};
       };
   
@@ -31,8 +27,8 @@ angular.
         }, function() {});
       };
     
-      this.userLogged = function() {
-        return !(self.loggedUser.id === undefined && self.loggedUser.username === 'Anonymous');
+      self.userLogged = function() {
+        return !(self.loggedUser === undefined || (self.loggedUser.id === undefined && self.loggedUser.username === 'Anonymous'));
       };
 
       this.backHome = function () {
@@ -43,7 +39,6 @@ angular.
         if (self.incomingBookings === undefined && this.userLogged()) {
           $http.get("http://localhost:8080/api?method=getIncomingBookings&id="+self.loggedUser.id).then(
             function (response) {
-              console.log(response.data);
               self.incomingBookings = response.data.value;
             },
             function (response) {
@@ -58,27 +53,29 @@ angular.
         if (self.pastBookings === undefined && this.userLogged()) {
           $http.get("http://localhost:8080/api?method=getPastBookings&id="+self.loggedUser.id).then(
             function (response) {
-              console.log(response.data);
               self.pastBookings = response.data.value;
             },
             function (response) {
-              self.incomingBookings = undefined;
+              self.pastBookings = undefined;
               // Show error msg
             }
           );
         }
-      }
+      };
 
       this.unbook = function (booking_id) {
         $http.get("http://localhost:8080/api?method=unbook&booking_id="+booking_id+"&by_user="+this.loggedUser.id).then(
           function (response) {
-            self.incomingBookings = self.incomingBookings.filter(function (bkng) {return !(bkng.booking_id === booking_id)})
+            self.incomingBookings = self.incomingBookings.filter(function (bkng) {return !(bkng.booking_id === booking_id)});
+            if (response.data.key) {
+              self.pastBookings.push(response.data.value);
+            }
           },
           function (response) {
             // error mesg
           }
         );
-      }
+      };
 
       if (!(this.userLogged())) {
         this.showLoginDialog();

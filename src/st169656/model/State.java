@@ -11,9 +11,11 @@ public class State extends BookingsImplementation
   {
     private int state_id;
     private String state_title;
+
     public static final int BOOKED = 1;
     public static final int UNAVAILABLE = 2;
-    public static final int AVAILABLE = 3;
+    public static final int CANCELLED = 3;
+    public static final int AVAILABLE = 4;
 
     public State (int id, String title)
       {

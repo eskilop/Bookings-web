@@ -114,9 +114,11 @@ public class Model
         State booked = new State (State.BOOKED, "Booked");
         State unavailable = new State (State.UNAVAILABLE, "Unavailable");
         State available = new State (State.AVAILABLE, "Available");
+        State cancelled = new State (State.CANCELLED, "Cancelled");
         booked.save ();
         unavailable.save ();
         available.save ();
+        cancelled.save ();
 
 
         ArrayList <Teacher> teachers = new ArrayList <> ();

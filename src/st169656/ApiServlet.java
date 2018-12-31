@@ -57,8 +57,7 @@ public class ApiServlet extends HttpServlet
               userId = Integer.valueOf (req.getParameter ("by_user"));
               if (m.isLogged (userId))
                 {
-                  unBook (Integer.valueOf (req.getParameter ("booking_id")), userId);
-                  writeJSON (resp, new Pair <> (true, "Booking unbooked correctly"));
+                  writeJSON (resp, new Pair <> (true, unBook (Integer.valueOf (req.getParameter ("booking_id")), userId)));
                 }
               else
                 writeJSON (resp, new Pair <> (false, "User is not logged in"));
@@ -118,12 +117,14 @@ public class ApiServlet extends HttpServlet
         newEntry.save ();
       }
 
-    private void unBook (int booking_id, int user_id)
+    private History unBook (int booking_id, int user_id)
       {
-        new History (booking_id, user_id, State.AVAILABLE, new Timestamp (new Date ().getTime ())).save ();
+        History h = new History (booking_id, user_id, State.CANCELLED, new Timestamp (new Date ().getTime ()));
+        h.save ();
         Booking b = Booking.get (booking_id);
         b.setState (State.AVAILABLE);
         b.save ();
+        return h;
       }
 
     private <T> void writeJSON (HttpServletResponse resp, T something) throws IOException
@@ -132,17 +133,10 @@ public class ApiServlet extends HttpServlet
         resp.getWriter ().write (gson.toJson (something));
       }
 
-    private ArrayList <Booking> getPastBookings (int user_id)
+    private ArrayList <History> getPastBookings (int user_id)
       {
-        ArrayList <History> hst = History.search ("SELECT * FROM `prenotazioni`.`history` WHERE booked_by = " + user_id + " && booking_state = " + State.AVAILABLE + ";");
-        ArrayList <Booking> pastBookings = new ArrayList <> ();
-        for (History h : hst)
-          {
-            Booking b = Booking.get (h.getBooking ().getId ());
-            if (b.getDate ().before (new Timestamp (new Date ().getTime ())))
-              pastBookings.add (b);
-          }
-        return pastBookings;
+        ArrayList <History> hst = History.search ("SELECT * FROM `prenotazioni`.`history` WHERE booked_by = " + user_id + ";");
+        return hst;
       }
 
     private ArrayList <Booking> getIncomingBookings (int user_id)

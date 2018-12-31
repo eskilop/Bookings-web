@@ -13,6 +13,10 @@
   
       <h4 ng-show="$ctrl.userLogged()">Hi, {{$ctrl.loggedUser.username}}</h4>
 
+      <md-button ng-click="$ctrl.toLogin()" ng-show="!$ctrl.userLogged()" class="md-icon-button" aria-label="Login">
+        <md-icon md-svg-icon="assets/img/round-account_circle-24px.svg"></md-icon>
+      </md-button>
+
       <md-button ng-click="$ctrl.invalidateSession()" ng-show="$ctrl.userLogged()" class="md-icon-button" aria-label="Logout">
         <md-icon md-svg-icon="assets/img/round-exit_to_app-24px.svg"></md-icon>
       </md-button>
@@ -61,22 +65,24 @@
     </md-input-container>
   </md-whiteframe>
 
-  <md-content class="md-padding" layout-xs="column" layout="row" layout-padding layout-wrap layout-fill style="padding-bottom: 5%;" ng-cloak>
-    <md-card flex="15" ng-repeat="booking in $ctrl.filterSameDate() | filter: $ctrl.qs | filter: $ctrl.qt | filter: $ctrl.qd | filter: $ctrl.qh">
+  <div md-row-height="fit" layout-xs="column" layout="row" layout-wrap>
+    <md-card 
+      ng-repeat="booking in $ctrl.filterSameDate() | filter: $ctrl.qs | filter: $ctrl.qt | filter: $ctrl.qd | filter: $ctrl.qh" 
+      layout-wrap flex="nogrow">
       <md-card-title>
         <md-card-title-text>
           <span class="md-headline">{{booking.booking_from.course.courseTitle}}</span>
           <span class="md-subhead">
-            <h3>{{booking.completeName}}</h3>
-            il {{booking.booking_date}}
+            <strong>{{booking.completeName}}</strong><br>
+            {{booking.booking_date}}
           </span>
         </md-card-title-text>
       </md-card-title>
-      <md-card-actions layout="row" layout-align="start center">
-        <md-checkbox ng-model="booking.selected" aria-label="Seleziona">
-          Seleziona
+      <md-card-actions>
+        <md-checkbox ng-model="booking.selected" >
+
         </md-checkbox>
       </md-card-actions>
     </md-card>
-  </md-content>
+  </md-grid-list>
 </div>

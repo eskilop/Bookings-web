@@ -13,15 +13,15 @@
     </div>
   </md-toolbar>
   
-  <div style="margin: 16px">
-    <h1>Future</h1>
-    <md-content class="md-padding" layout-xs="column" layout="row" layout-wrap flex>
-      <md-card flex="15" ng-repeat="booking in $ctrl.incomingBookings">
+  <div style="margin: 16px" ng-show="$ctrl.incomingBookings.length > 0">
+    <h1>Incoming</h1>
+    <md-grid-list md-row-height="fit" layout-xs="column" layout="row" layout-wrap layout-padding md-cols-gt="5" md-cols-lg-xl="6" md-cols-md="4" md-cols="6">
+      <md-card ng-repeat="booking in $ctrl.incomingBookings" flex="nogrow">
         <md-card-title>
           <md-card-title-text>
             <span class="md-headline">{{booking.booking_from.course.courseTitle}}</span>
             <span class="md-subhead">
-              <h3>{{booking.booking_from.name}} {{booking.booking_from.surname}}</h3>
+             <strong><i>{{booking.booking_from.name}} {{booking.booking_from.surname}}</i></strong><br>
               il {{booking.booking_date}}
             </span>
           </md-card-title-text>
@@ -30,21 +30,24 @@
             <md-button md-no-ink class="md-primary" ng-click="$ctrl.unbook(booking.booking_id)">Cancel</md-button>
         </md-card-actions>
       </md-card>
-    </md-content>
+    </md-grid-list>
+  </div>
 
-    <h1>Passate</h1>
-    <md-content class="md-padding" layout-xs="column" layout="row" layout-wrap flex>
-      <md-card flex="15" ng-repeat="booking in $ctrl.pastBookings">
+  <div style="margin: 16px" ng-show="$ctrl.pastBookings.length > 0">
+    <h1>Past</h1>
+    <md-grid-list md-row-height="fit" layout-xs="column" layout="row" layout-wrap layout-padding md-cols-gt="5" md-cols-lg-xl="6" md-cols-md="4" md-cols="6">
+      <md-card ng-repeat="history in $ctrl.pastBookings" flex="nogrow">
         <md-card-title>
           <md-card-title-text>
-            <span class="md-headline">{{booking.booking_from.course.courseTitle}}</span>
+            <span class="md-headline">{{history.booking_id.booking_from.course.courseTitle}}</span>
             <span class="md-subhead">
-              <h3>{{booking.booking_from.name}} {{booking.booking_from.surname}}</h3>
-              il {{booking.booking_date}}
+              <strong><i>{{history.booking_id.booking_from.name}} {{history.booking_id.booking_from.surname}}</i></strong><br>
+              il {{history.booking_id.booking_date}}<br>
+              Status: <strong>{{history.booking_state.state_title}}</strong> <br> on: {{history.action_date}}
             </span>
           </md-card-title-text>
         </md-card-title>
       </md-card>
-    </md-content>
+    </md-grid-list>
   </div>
 </div>

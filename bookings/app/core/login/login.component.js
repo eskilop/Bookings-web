@@ -33,17 +33,18 @@ angular.
           then(function (data) {
                 if (data.data.key) {
                   var usr = JSON.parse(data.data.value);
-                  $cookies.put("loggedUserId", usr.id);
-                  $cookies.put("loggedUserUsername", usr.username);
+                  $cookies.putObject('loggedUser', {id:usr.id, username:usr.username});
                   self.continue();
                 }
                 else {
                   console.log(data.data);
                   self.showDialog(data.data.value);
                 }
-              }, function (data) {
+              }, 
+              function (data) {
                 console.log(data);
-            });
+              }
+            );
           }
       }
 
@@ -57,7 +58,7 @@ angular.
           saltedword += salt;
         }
         return saltedword;
-      }
+      };
 
       self.showDialog = function(text) {
         $mdDialog.show(
@@ -69,9 +70,10 @@ angular.
             .ok('Ok')
         );
       };
+
       this.continue = function() {
         var oldRoute = $cookies.get("oldRoute");
         window.location.href = oldRoute === undefined ? "/#!/home" : oldRoute;
-      }
+      };
     }]
   });
