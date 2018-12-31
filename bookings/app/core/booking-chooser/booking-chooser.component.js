@@ -92,7 +92,8 @@ component('bookingChooser', {
     
       self.bookSelected = function() {
           var workedFlag = true;
-          self.getSelected().forEach(bkng => {
+          var selected = self.getSelected();
+          selected.forEach(bkng => {
             // remove added attributes, so server can build the corrispondant object
             delete bkng.completeName;
             delete bkng.selected;

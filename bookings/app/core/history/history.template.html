@@ -35,19 +35,26 @@
 
   <div style="margin: 16px" ng-show="$ctrl.pastBookings.length > 0">
     <h1>Past</h1>
-    <md-grid-list md-row-height="fit" layout-xs="column" layout="row" layout-wrap layout-padding md-cols-gt="5" md-cols-lg-xl="6" md-cols-md="4" md-cols="6">
-      <md-card ng-repeat="history in $ctrl.pastBookings" flex="nogrow">
-        <md-card-title>
-          <md-card-title-text>
-            <span class="md-headline">{{history.booking_id.booking_from.course.courseTitle}}</span>
-            <span class="md-subhead">
-              <strong><i>{{history.booking_id.booking_from.name}} {{history.booking_id.booking_from.surname}}</i></strong><br>
+    <div class="md-padding" layout="row" flex layout-wrap>
+      <div layout="row" flex layout-wrap>
+        <div class="parent" layout="column" ng-repeat="history in $ctrl.pastBookings" flex="noshrink">
+          <md-card>
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-headline">{{history.booking_id.booking_from.course.courseTitle}}</span>
+                <span class="md-subhead">
+                  <strong><i>{{history.booking_id.booking_from.name}} {{history.booking_id.booking_from.surname}}</i></strong>
+                </span>
+              </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
               il {{history.booking_id.booking_date}}<br>
-              Status: <strong>{{history.booking_state.state_title}}</strong> <br> on: {{history.action_date}}
-            </span>
-          </md-card-title-text>
-        </md-card-title>
-      </md-card>
-    </md-grid-list>
+              Status: <strong>{{history.booking_state.state_title}}</strong><br> 
+              on: {{history.action_date}}
+            </md-card-content>
+          </md-card>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
