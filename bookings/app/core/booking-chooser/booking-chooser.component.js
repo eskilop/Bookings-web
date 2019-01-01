@@ -165,15 +165,19 @@ component('bookingChooser', {
         function (response) {
           self.showDialog("Error", "Can't contact server");
         }
-      )
+      );
     };
 
-    self.toLogin = function () {
+    this.toLogin = function () {
       window.location.href = "/#!/login";
     }
 
-    self.toHistory = function () {
+    this.toHistory = function () {
       window.location.href = "/#!/history";
+    }
+
+    this.toAdministration = function () {
+      window.location.href = "/#!/admin";
     }
 
     self.onDateChanged = function() {

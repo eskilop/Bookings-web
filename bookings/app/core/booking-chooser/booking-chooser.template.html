@@ -10,6 +10,10 @@
       <md-button ng-disabled="!($ctrl.user.isLogged())" class="md-icon-button" aria-label="History" ng-click="$ctrl.toHistory()">
         <md-icon md-svg-icon="assets/img/round-history-24px.svg"></md-icon>
       </md-button>
+
+      <md-button ng-show="$ctrl.user.isAdministrator()" class="md-icon-button" aria-label="Administration" ng-click="$ctrl.toAdministration()">
+          <md-icon md-svg-icon="assets/img/round-security-24px.svg"></md-icon>
+        </md-button>
   
       <h4 ng-show="$ctrl.user.isLogged()">Hi, {{$ctrl.user.username}}</h4>
 

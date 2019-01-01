@@ -48,7 +48,8 @@ class User {
   invalidateSession() {
     this._id = 0;
     this._username = "Anonymous";
+    this._role = {id: 2, title: "Client"};
     this._cookies.remove("loggedUser");
-    this._cookies.putObject("loggedUser", {id: 0, username: "Anonymous"});
+    this._cookies.putObject("loggedUser", {id: 0, username: "Anonymous", role: {id: 2, title: "Client"}});
   }
 }
