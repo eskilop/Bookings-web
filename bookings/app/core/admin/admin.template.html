@@ -1,0 +1,39 @@
+<div>
+  <md-toolbar class="md-hue-2">
+    <div class="md-toolbar-tools">
+        <md-button class="md-icon-button" aria-label="Back" ng-click="">
+          <md-icon md-svg-icon="assets/img/round-arrow_back-24px.svg"></md-icon>
+        </md-button>
+      <h1 flex md-truncate>Bookings</h1>
+      
+      <h4 ng-show="$ctrl.user.isLogged()">{{$ctrl.user.username}}</h4>
+      <md-button ng-click="$ctrl.invalidateSession()" ng-show="$ctrl.user.isLogged()" class="md-icon-button" aria-label="Logout">
+        <md-icon md-svg-icon="assets/img/round-exit_to_app-24px.svg"></md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+
+  <div layout="row">
+    <div flex="60" style="overflow: hidden;overflow-y: scroll;height: 865px;">
+      <div ng-repeat="histpiece in $ctrl.history">
+        <md-card>
+          <md-card-title>
+            <md-card-title-text>
+              <span class="md-headline">{{histpiece.booked_by.username}}</span>
+            </md-card-title-text>
+          </md-card-title>
+          <md-card-content>
+            <strong>{{histpiece.booking_state.state_title}}</strong>
+            booking #{{histpiece.booking_id.booking_id}} with <i>{{histpiece.booking_id.booking_from.name}} {{histpiece.booking_id.booking_from.surname}}</i>
+            on {{histpiece.booking_id.booking_from.course.courseTitle}}
+          </md-card-content>
+        </md-card>
+      </div>
+    </div>
+    <div flex="40">
+      <md-button class="md-raised md-primary">Inserisci Docente</md-button>
+      <md-button class="md-raised md-primary">Inserisci Corso</md-button>
+      <md-button class="md-raised md-primary">Assegna Corso</md-button>
+    </div>
+  </div>
+</div>

@@ -12,6 +12,9 @@ public class Role extends BookingsImplementation
     private int id;
     private String title;
 
+    public static final int ADMINISTRATOR = 1;
+    public static final int CLIENT = 2;
+
     public Role (int id, String title)
       {
         this.id = id;

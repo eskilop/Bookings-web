@@ -85,6 +85,13 @@ public class ApiServlet extends HttpServlet
               else
                 writeJSON (resp, new Pair <> (false, "User is not logged in"));
               break;
+
+            case "getHistory":
+              userId = Integer.valueOf (req.getParameter ("by_user"));
+              if (User.get (userId).getRole ().getId () == Role.ADMINISTRATOR && m.isLogged (userId))
+                writeJSON (resp, new Pair<> (true, History.search ("SELECT * FROM history;")));
+              else writeJSON (resp, new Pair<> (false, "User not logged in or not an administrator."));
+              break;
           }
       }
 
