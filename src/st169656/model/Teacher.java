@@ -94,6 +94,11 @@ public class Teacher extends BookingsImplementation
         return course;
       }
 
+    public void setCourse (int cid)
+      {
+        this.course = Course.get (cid);
+      }
+
     @Override
     public void save ()
       {

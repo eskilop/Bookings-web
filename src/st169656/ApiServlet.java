@@ -2,6 +2,7 @@ package st169656;
 
 import com.google.gson.Gson;
 import javafx.util.Pair;
+import st169656.dao.BookingsImplementation;
 import st169656.model.*;
 import st169656.model.wrappers.UserCredential;
 
@@ -33,7 +34,8 @@ public class ApiServlet extends HttpServlet
         resp.setHeader ("Access-Control-Allow-Origin", "*");
 
         String method = req.getParameter ("method");
-        int userId = 0;
+        int userId;
+        int objId;
 
         switch (method)
           {
@@ -41,12 +43,6 @@ public class ApiServlet extends HttpServlet
               userId = Integer.valueOf (req.getParameter ("by_user"));
               m.removeLogged (userId);
               writeJSON (resp, !m.isLogged (userId));
-              break;
-
-            case "getBookings": // Todo: set unavailable bookings once they become unavailable
-              // remove same date bookings
-              userId = Integer.valueOf (req.getParameter ("by_user"));
-              writeJSON (resp, getBookingsForUser (userId));
               break;
 
             case "book":
@@ -68,6 +64,12 @@ public class ApiServlet extends HttpServlet
                 }
               else
                 writeJSON (resp, new Pair <> (false, "User is not logged in"));
+              break;
+
+            case "getBookings": // Todo: set unavailable bookings once they become unavailable
+              // remove same date bookings
+              userId = Integer.valueOf (req.getParameter ("by_user"));
+              writeJSON (resp, getBookingsForUser (userId));
               break;
 
             case "getIncomingBookings":
@@ -92,6 +94,38 @@ public class ApiServlet extends HttpServlet
                 writeJSON (resp, new Pair<> (true, History.search ("SELECT * FROM history;")));
               else writeJSON (resp, new Pair<> (false, "User not logged in or not an administrator."));
               break;
+
+            case "getTeachers":
+              writeJSON (resp, Teacher.search ("SELECT * FROM teachers;"));
+              break;
+
+            case "updateTeacher":
+              int teacher_id = Integer.valueOf (req.getParameter ("teacher_id"));
+              objId = Integer.valueOf (req.getParameter ("course_id"));
+              userId = Integer.valueOf (req.getParameter ("by_user"));
+              if (User.get (userId).getRole ().getId () == Role.ADMINISTRATOR && m.isLogged (userId))
+                {
+                  Teacher toup = Teacher.get (teacher_id);
+                  toup.setCourse (objId);
+                  toup.save ();
+                  writeJSON (resp, true);
+                }
+              else writeJSON (resp, "User not logged in or not administrator");
+              break;
+
+            case "delTeacher":
+              objId = Integer.valueOf (req.getParameter ("teacher_id"));
+              userId = Integer.valueOf (req.getParameter ("by_user"));
+              Teacher togo = Teacher.get (objId);
+              writeJSON (resp, checkAndDelete (userId, togo));
+              break;
+
+            case "delCourse":
+              objId = Integer.valueOf (req.getParameter ("course_id"));
+              userId = Integer.valueOf (req.getParameter ("by_user"));
+              Course todel = Course.get (objId);
+              writeJSON (resp, checkAndDelete (userId, todel));
+              break;
           }
       }
 
@@ -102,24 +136,52 @@ public class ApiServlet extends HttpServlet
         resp.addHeader ("Access-Control-Allow-Origin", "*");
 
         Gson gson = new Gson ();
-
         String raw_data = getDataFromRequest (req);
+        int userId;
 
         switch (req.getParameter ("method"))
           {
             case "login":
               UserCredential u = gson.fromJson (raw_data, UserCredential.class);
-
               ArrayList <User> res = User.search ("SELECT * FROM `prenotazioni`.`users` WHERE " +
                   "user_name=\"" + u.getUsername () + "\" and user_password=\"" + u.getUserpass () + "\";");
-
               writeJSON (resp, getLoginResponse (res, u));
               break;
 
-            default:
-              System.out.println ("CRISTO");
+            case "newTeacher":
+              userId = Integer.valueOf (req.getParameter ("by_user"));
+              Teacher newComer = new Gson ().fromJson (raw_data, Teacher.class);
+              writeJSON (resp, checkAndSave (userId, newComer));
+              break;
+
+            case "newCourse":
+              userId = Integer.valueOf (req.getParameter ("by_user"));
+              Course newCourse = new Gson ().fromJson (raw_data, Course.class);
+              writeJSON (resp, checkAndSave (userId, newCourse));
               break;
           }
+      }
+
+    private <T extends BookingsImplementation> Pair<Boolean, String> checkAndDelete(int user_id, T obj)
+      {
+        if (User.get (user_id).getRole ().getId () == Role.ADMINISTRATOR && m.isLogged (user_id))
+          {
+            obj.delete ();
+            return new Pair<> (true, "All right");
+          }
+        else
+          return new Pair<> (false, "User not logged in or not an administrator.");
+      }
+
+    private <T extends BookingsImplementation> Pair<Boolean, String> checkAndSave(int user_id, T obj)
+      {
+        if (User.get (user_id).getRole ().getId () == Role.ADMINISTRATOR && m.isLogged (user_id))
+          {
+            obj.save ();
+            return new Pair<> (true, new Gson ().toJson (obj));
+          }
+        else
+          return new Pair<> (false, "User not logged in or not an administrator.");
       }
 
     private ArrayList <Booking> getBookingsForUser (int user_id)
