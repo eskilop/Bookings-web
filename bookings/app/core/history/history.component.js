@@ -5,11 +5,26 @@ angular.
     controller: ['$cookies', '$http', '$mdDialog', function($cookies, $http, $mdDialog) {
       var self = this;
 
-      this.loggedUser = $cookies.getObject("loggedUser");
+      this.user = new User($cookies);
 
-      this.invalidateSession = function() {
-        $cookies.remove("loggedUser");
-        self.loggedUser = {id:undefined, username:"Anonymous"};
+      $cookies.remove("oldRoute");
+      $cookies.put("oldRoute", "/#!/history");
+
+      self.invalidateSession = function() {
+        this.user.invalidateSession();
+        $http.get("http://localhost:8080/api?method=logout&by_user="+this.user.id).then(
+          function (response) {
+            if (response.data) {
+              self.showDialog("All right!", "you logged out successfully");
+            }
+            else {
+              self.showDialog(":(", "there was a problem logging out");
+            }
+          },
+          function (response) {
+            self.showDialog("Error", "Can't contact server");
+          }
+        )
       };
   
       this.showLoginDialog = function() {
@@ -18,53 +33,66 @@ angular.
               .title('You must be logged in to continue')
               .textContent('To book a course and use other functions of the app you must be logged in')
               .ariaLabel('You aren\'t logged in')
-              .ok('Log in')
-              .cancel('Cancel');
+              .ok('Log in');
     
         $mdDialog.show(confirm).then(function() {
-          $cookies.put("oldRoute", "/#!/history");
           window.location.href = "/#!/login";
         }, function() {});
       };
-    
-      self.userLogged = function() {
-        return !(self.loggedUser === undefined || (self.loggedUser.id === undefined && self.loggedUser.username === 'Anonymous'));
-      };
 
+      this.showDialog = function(title, text) {
+        $mdDialog.show(
+          $mdDialog.alert()
+            .clickOutsideToClose(true)
+            .title(title)
+            .textContent(text)
+            .ariaLabel('Server Sync error')
+            .ok('Ok')
+        );
+      };
+    
       this.backHome = function () {
         window.location.href = "/#!/home";
       }
 
       this.getIncomingBookings = function () {
-        if (self.incomingBookings === undefined && this.userLogged()) {
-          $http.get("http://localhost:8080/api?method=getIncomingBookings&id="+self.loggedUser.id).then(
+        if (self.incomingBookings === undefined && this.user.isLogged()) {
+          $http.get("http://localhost:8080/api?method=getIncomingBookings&id="+this.user.id).then(
             function (response) {
-              self.incomingBookings = response.data.value;
+              if (response.data.key) {
+                self.incomingBookings = response.data.value;
+              } else {
+                self.showDialog("Error while getting incoming bookings", response.data.value);
+              }
             },
             function (response) {
               self.incomingBookings = undefined;
-              // Show error msg
+              self.showDialog("Error while getting incoming bookings", "");
             }
           );
         }
       }
 
       this.getPastBookings = function () {
-        if (self.pastBookings === undefined && this.userLogged()) {
-          $http.get("http://localhost:8080/api?method=getPastBookings&id="+self.loggedUser.id).then(
+        if (this.pastBookings === undefined && this.user.isLogged()) {
+          $http.get("http://localhost:8080/api?method=getPastBookings&id="+self.user.id).then(
             function (response) {
-              self.pastBookings = response.data.value;
+              if (response.data.key) {
+                self.pastBookings = response.data.value;
+              } else {
+                self.showDialog("Error while getting past bookings", response.data.value);
+              }
             },
             function (response) {
               self.pastBookings = undefined;
-              // Show error msg
+              self.showDialog("Error while getting past bookings", "");
             }
           );
         }
       };
 
       this.unbook = function (booking_id) {
-        $http.get("http://localhost:8080/api?method=unbook&booking_id="+booking_id+"&by_user="+this.loggedUser.id).then(
+        $http.get("http://localhost:8080/api?method=unbook&booking_id="+booking_id+"&by_user="+this.user.id).then(
           function (response) {
             self.incomingBookings = self.incomingBookings.filter(function (bkng) {return !(bkng.booking_id === booking_id)});
             if (response.data.key) {
@@ -72,14 +100,15 @@ angular.
             }
           },
           function (response) {
-            // error mesg
+            self.showDialog("Error while unbooking booking", response.data);
           }
         );
       };
 
-      if (!(this.userLogged())) {
+      if (!(this.user.isLogged())) {
         this.showLoginDialog();
       }
+      
       this.getIncomingBookings();
       this.getPastBookings();
      

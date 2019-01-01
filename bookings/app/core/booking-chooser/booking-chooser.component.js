@@ -5,13 +5,12 @@ component('bookingChooser', {
   controller: ['$http', '$cookies', '$mdDialog', function BookingChooserController($http, $cookies, $mdDialog) {
     var self = this;
 
-    this.loggedUser = $cookies.getObject('loggedUser');
+    this.user = new User($cookies);
 
-    if (this.loggedUser === undefined) {
-        $cookies.put("loggedUser", {id:undefined, username: "Anonymous"});
-      }
+    $cookies.remove("oldRoute");
+    $cookies.put("oldRoute", "/#!/home");
 
-    $http.get("http://localhost:8080/api?method=getBookings&by_user="+this.loggedUser.id).then(function (response) {
+    $http.get("http://localhost:8080/api?method=getBookings&by_user="+this.user.id).then(function (response) {
       self.bookings = response.data;
       self.courses = new Array();
       self.teachers = new Array();
@@ -99,7 +98,7 @@ component('bookingChooser', {
             delete bkng.completeName;
             delete bkng.selected;
 
-            $http.get("http://localhost:8080/api?method=book&booking_id="+bkng.booking_id+"&by_user="+this.loggedUser.id)
+            $http.get("http://localhost:8080/api?method=book&booking_id="+bkng.booking_id+"&by_user="+this.user.id)
             .then(function (response) {
                     if (response.data.key) {
                       workedFlag = workedFlag && true;
@@ -127,8 +126,20 @@ component('bookingChooser', {
     });
 
     self.invalidateSession = function() {
-      $cookies.remove("loggedUser");
-      self.loggedUser = {id:undefined, username:"Anonymous"};
+      this.user.invalidateSession();
+      $http.get("http://localhost:8080/api?method=logout&by_user="+this.user.id).then(
+        function (response) {
+          if (response.data) {
+            this.showDialog("All right!", "you logged out successfully");
+          }
+          else {
+            this.showDialog(":(", "there was a problem logging out");
+          }
+        },
+        function (response) {
+          this.showDialog("Error", "Can't contact server");
+        }
+      )
     };
 
     self.showLoginDialog = function(ev) {
@@ -142,13 +153,8 @@ component('bookingChooser', {
             .cancel('Cancel');
   
       $mdDialog.show(confirm).then(function() {
-        $cookies.put("oldRoute", "/#!/home")
         window.location.href = "/#!/login";
       }, function() {});
-    };
-  
-    self.userLogged = function() {
-      return !(self.loggedUser === undefined || (self.loggedUser.id === undefined && self.loggedUser.username === 'Anonymous'));
     };
 
     self.toLogin = function () {

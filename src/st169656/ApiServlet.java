@@ -37,6 +37,12 @@ public class ApiServlet extends HttpServlet
 
         switch (method)
           {
+            case "logout":
+              userId = Integer.valueOf (req.getParameter ("by_user"));
+              m.removeLogged (userId);
+              writeJSON (resp, !m.isLogged (userId));
+              break;
+
             case "getBookings": // Todo: set unavailable bookings once they become unavailable
               // remove same date bookings
               userId = Integer.valueOf (req.getParameter ("by_user"));
@@ -112,7 +118,7 @@ public class ApiServlet extends HttpServlet
     private ArrayList <Booking> getBookingsForUser (int user_id)
       {
         return Booking.search (
-            "select * from bookings where bookings.booking_date >= CURRENT_DATE and bookings.booking_date not in\n" +
+            "select * from bookings where bookings.booking_date >= CURRENT_TIMESTAMP and bookings.booking_date not in\n" +
                 "(\n" +
                 "    select b.booking_date from bookings b where booking_id in\n" +
                 "    (\n" +

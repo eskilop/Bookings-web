@@ -71,6 +71,11 @@ angular.
         );
       };
 
+      this.guestLogin = function () {
+        $cookies.putObject('loggedUser', {id:0, username:'Anonymous'});
+        this.continue();
+      }
+
       this.continue = function() {
         var oldRoute = $cookies.get("oldRoute");
         window.location.href = oldRoute === undefined ? "/#!/home" : oldRoute;
