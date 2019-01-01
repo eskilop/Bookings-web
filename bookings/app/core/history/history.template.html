@@ -15,22 +15,28 @@
   
   <div style="margin: 16px" ng-show="$ctrl.incomingBookings.length > 0">
     <h1>Incoming</h1>
-    <md-grid-list md-row-height="fit" layout-xs="column" layout="row" layout-wrap layout-padding md-cols-gt="5" md-cols-lg-xl="6" md-cols-md="4" md-cols="6">
-      <md-card ng-repeat="booking in $ctrl.incomingBookings" flex="nogrow">
-        <md-card-title>
-          <md-card-title-text>
-            <span class="md-headline">{{booking.booking_from.course.courseTitle}}</span>
-            <span class="md-subhead">
-             <strong><i>{{booking.booking_from.name}} {{booking.booking_from.surname}}</i></strong><br>
+    <div class="md-padding" layout="row" flex layout-wrap>
+      <div layout="row" flex layout-wrap>
+        <div class="parent" layout="column" ng-repeat="booking in $ctrl.incomingBookings" flex="noshrink">
+          <md-card>
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-headline">{{booking.booking_from.course.courseTitle}}</span>
+                <span class="md-subhead">
+                 <strong><i>{{booking.booking_from.name}} {{booking.booking_from.surname}}</i></strong><br>
+                </span>
+              </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
               il {{booking.booking_date}}
-            </span>
-          </md-card-title-text>
-        </md-card-title>
-        <md-card-actions layout="row" layout-align="start center">
-            <md-button md-no-ink class="md-primary" ng-click="$ctrl.unbook(booking.booking_id)">Cancel</md-button>
-        </md-card-actions>
-      </md-card>
-    </md-grid-list>
+            </md-card-content>
+            <md-card-actions layout="row" layout-align="start center">
+                <md-button md-no-ink class="md-primary" ng-click="$ctrl.unbook(booking.booking_id)">Cancel</md-button>
+            </md-card-actions>
+          </md-card>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div style="margin: 16px" ng-show="$ctrl.pastBookings.length > 0">

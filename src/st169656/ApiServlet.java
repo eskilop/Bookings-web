@@ -38,8 +38,9 @@ public class ApiServlet extends HttpServlet
         switch (method)
           {
             case "getBookings": // Todo: set unavailable bookings once they become unavailable
-              ArrayList <Booking> bookings = Booking.search ("SELECT * FROM `prenotazioni`.`bookings` WHERE booking_state = " + State.AVAILABLE + ";");
-              writeJSON (resp, bookings);
+              // remove same date bookings
+              userId = Integer.valueOf (req.getParameter ("by_user"));
+              writeJSON (resp, getBookingsForUser (userId));
               break;
 
             case "book":
@@ -108,6 +109,24 @@ public class ApiServlet extends HttpServlet
           }
       }
 
+    private ArrayList <Booking> getBookingsForUser (int user_id)
+      {
+        return Booking.search (
+            "select * from bookings where bookings.booking_date not in -- get all bookings where the user didn't book\n" +
+                "(\n" +
+                "    select b.booking_date from bookings b where booking_id in\n" +
+                "    (\n" +
+                "        select h.booking_id from history h where h.booking_id not in\n" +
+                "        (\n" +
+                "           select distinct h1.booking_id\n" +
+                "           from history h1 inner join history h2 on \n" +
+                "            (h1.booking_id = h2.booking_id and h1.booking_state = 1 and h2.booking_state = 3 and h1.booked_by = " + user_id + ")\n" +
+                "        )\n" +
+                "    )\n" +
+                ");"
+        );
+      }
+
     private void book (int booking_id, int user_id)
       {
         History newEntry = new History (booking_id, user_id, State.BOOKED, new Timestamp (new Date ().getTime ()));
@@ -148,7 +167,7 @@ public class ApiServlet extends HttpServlet
             Booking b = Booking.get (h.getBooking ().getId ());
             if (b.getDate ().after (new Timestamp (new Date ().getTime ())) &&
                 b.getState ().getId () == State.BOOKED &&
-                !incomingBookings.contains (b))
+                ! incomingBookings.contains (b))
               incomingBookings.add (b);
           }
         return incomingBookings;

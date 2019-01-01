@@ -11,7 +11,7 @@ component('bookingChooser', {
         $cookies.put("loggedUser", {id:undefined, username: "Anonymous"});
       }
 
-    $http.get("http://localhost:8080/api?method=getBookings").then(function (response) {
+    $http.get("http://localhost:8080/api?method=getBookings&by_user="+this.loggedUser.id).then(function (response) {
       self.bookings = response.data;
       self.courses = new Array();
       self.teachers = new Array();
@@ -93,6 +93,7 @@ component('bookingChooser', {
       self.bookSelected = function() {
           var workedFlag = true;
           var selected = self.getSelected();
+          var dates = selected.map(x => x.booking_date);
           selected.forEach(bkng => {
             // remove added attributes, so server can build the corrispondant object
             delete bkng.completeName;
@@ -111,6 +112,9 @@ component('bookingChooser', {
 
           if (workedFlag)
             {
+              self.bookings = self.bookings.filter(function (bkng) {
+                return !dates.includes(bkng.booking_date);
+              })
               self.showDialog('Booking request result', 'All the bookings were booked with success');
             } else {
               self.showDialog('Booking request result', "There was a problem with some bookings, they weren't booked");
@@ -168,7 +172,11 @@ component('bookingChooser', {
 
     self.onDateChanged = function() {
       var options = { year: 'numeric', month: 'short', day: 'numeric' };
-      self.qd = self.qd.toLocaleDateString("en-US", options);
+      console.log(self.qd)
+      if (self.qd === null)
+        self.qd = "";
+      else
+        self.qd = self.qd.toLocaleDateString("en-US", options);
     };
   }]
 });
