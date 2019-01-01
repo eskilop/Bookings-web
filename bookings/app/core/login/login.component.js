@@ -33,7 +33,7 @@ angular.
           then(function (data) {
                 if (data.data.key) {
                   var usr = JSON.parse(data.data.value);
-                  $cookies.putObject('loggedUser', {id:usr.id, username:usr.username});
+                  $cookies.putObject('loggedUser', {id:usr.id, username:usr.username, role:usr.role});
                   self.continue();
                 }
                 else {
@@ -72,7 +72,7 @@ angular.
       };
 
       this.guestLogin = function () {
-        $cookies.putObject('loggedUser', {id:0, username:'Anonymous'});
+        $cookies.putObject('loggedUser', {id:0, username:'Anonymous', role: {id: 2, title:"Client"}});
         this.continue();
       }
 

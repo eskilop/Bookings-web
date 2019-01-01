@@ -7,11 +7,11 @@ angular.
 
         this.user = new User($cookies);
 
-        console.log(this.user);
-        console.log(this.user.isLogged());
-
-        if (!this.user.isLogged()) {
+        if (!this.user.isLogged() || !this.user.isAdministrator()) {
           window.location.href = "/#!/login";
+        }
+        else {
+          this.getHistory();
         }
 
         this.getHistory = function () {
@@ -25,7 +25,5 @@ angular.
             }
           );
         }
-
-        this.getHistory();
       }]
     });

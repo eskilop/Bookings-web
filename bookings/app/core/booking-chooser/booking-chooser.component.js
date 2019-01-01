@@ -125,21 +125,15 @@ component('bookingChooser', {
       };
     });
 
-    self.invalidateSession = function() {
-      this.user.invalidateSession();
-      $http.get("http://localhost:8080/api?method=logout&by_user="+this.user.id).then(
-        function (response) {
-          if (response.data) {
-            this.showDialog("All right!", "you logged out successfully");
-          }
-          else {
-            this.showDialog(":(", "there was a problem logging out");
-          }
-        },
-        function (response) {
-          this.showDialog("Error", "Can't contact server");
-        }
-      )
+    self.showDialog = function(title, text) {
+      $mdDialog.show(
+        $mdDialog.alert()
+          .clickOutsideToClose(true)
+          .title(title)
+          .textContent(text)
+          .ariaLabel(title)
+          .ok('Ok')
+      );
     };
 
     self.showLoginDialog = function(ev) {
@@ -157,6 +151,23 @@ component('bookingChooser', {
       }, function() {});
     };
 
+    self.invalidateSession = function() {
+      this.user.invalidateSession();
+      $http.get("http://localhost:8080/api?method=logout&by_user="+this.user.id).then(
+        function (response) {
+          if (response.data) {
+            self.showDialog("All right!", "you logged out successfully");
+          }
+          else {
+            self.showDialog(":(", "there was a problem logging out");
+          }
+        },
+        function (response) {
+          self.showDialog("Error", "Can't contact server");
+        }
+      )
+    };
+
     self.toLogin = function () {
       window.location.href = "/#!/login";
     }
@@ -164,17 +175,6 @@ component('bookingChooser', {
     self.toHistory = function () {
       window.location.href = "/#!/history";
     }
-
-    self.showDialog = function(title, text) {
-      $mdDialog.show(
-        $mdDialog.alert()
-          .clickOutsideToClose(true)
-          .title(title)
-          .textContent(text)
-          .ariaLabel(title)
-          .ok('Ok')
-      );
-    };
 
     self.onDateChanged = function() {
       var options = { year: 'numeric', month: 'short', day: 'numeric' };
