@@ -112,7 +112,7 @@ public class ApiServlet extends HttpServlet
     private ArrayList <Booking> getBookingsForUser (int user_id)
       {
         return Booking.search (
-            "select * from bookings where bookings.booking_date not in -- get all bookings where the user didn't book\n" +
+            "select * from bookings where bookings.booking_date >= CURRENT_DATE and bookings.booking_date not in\n" +
                 "(\n" +
                 "    select b.booking_date from bookings b where booking_id in\n" +
                 "    (\n" +

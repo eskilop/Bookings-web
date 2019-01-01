@@ -172,7 +172,6 @@ component('bookingChooser', {
 
     self.onDateChanged = function() {
       var options = { year: 'numeric', month: 'short', day: 'numeric' };
-      console.log(self.qd)
       if (self.qd === null)
         self.qd = "";
       else
