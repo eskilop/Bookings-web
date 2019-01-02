@@ -112,9 +112,9 @@ public class ApiServlet extends HttpServlet
                   Teacher toup = Teacher.get (teacher_id);
                   toup.setCourse (objId);
                   toup.save ();
-                  writeJSON (resp, true);
+                  writeJSON (resp, new Pair<> (true, "All right"));
                 }
-              else writeJSON (resp, "User not logged in or not administrator");
+              else writeJSON (resp, new Pair<> (false, "User not logged in or not administrator"));
               break;
 
             case "delTeacher":

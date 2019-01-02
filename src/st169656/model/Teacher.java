@@ -76,6 +76,11 @@ public class Teacher extends BookingsImplementation
         return ret;
       }
 
+    public static ArrayList <Teacher> search (String search)
+      {
+        return search (search, Teacher::fromResultSet);
+      }
+
     public int getId ()
       {
         return id;
@@ -110,17 +115,24 @@ public class Teacher extends BookingsImplementation
               "teacher_surname=\"" + surname + "\"," +
               "teacher_course=" + getCourse ().getId () + " WHERE teacher_id = " + id + ";");
         else
-          exec ("INSERT INTO `" + DB_NAME + "`.`teachers` (teacher_id, teacher_name, teacher_surname, teacher_course) " +
-              "VALUES (" + id + ", \"" +
-              getName () + "\", \"" +
-              getSurname () + "\", " +
-              getCourse ().getId () +
-              ");");
-      }
-
-    public static ArrayList<Teacher> search(String search)
-      {
-        return search (search, Teacher::fromResultSet);
+          try
+            {
+              exec ("INSERT INTO `" + DB_NAME + "`.`teachers` (teacher_id, teacher_name, teacher_surname, teacher_course) " +
+                  "VALUES (" + id + ", \"" +
+                  getName () + "\", \"" +
+                  getSurname () + "\", " +
+                  getCourse ().getId () +
+                  ");");
+            }
+          catch (NullPointerException npe)
+            {
+              exec ("INSERT INTO `" + DB_NAME + "`.`teachers` (teacher_id, teacher_name, teacher_surname, teacher_course) " +
+                  "VALUES (" + id + ", \"" +
+                  getName () + "\", \"" +
+                  getSurname () + "\", " +
+                  "null" +
+                  ");");
+            }
       }
 
     @Override

@@ -6,11 +6,16 @@ angular.
         var self = this;
 
         this.user = new User($cookies);
-        this.tcassoc = [{teacher: "ASD", course:"MEMES"}, {teacher: "Jesus", course:"Religion"}, {teacher: "PLS", course:"IT"}, {teacher: "STAHP", course:"COM"}, {teacher: "Mundani", course:"Math"}];
-
 
         if (!this.user.isLogged() || !this.user.isAdministrator()) {
           window.location.href = "/#!/login";
+        }
+
+        this.filterCourses = function (course) {
+          if (course === undefined) return this.courses;
+          else return this.courses.filter(function (c) {
+            return !(course.id === c.id && course.courseTitle === c.courseTitle);
+          });
         }
 
         this.checkWellFormed = function (obj) {
@@ -25,6 +30,18 @@ angular.
           }
 
           return wellformed;
+        }
+
+        this.alert = function(title, text) {
+          $mdDialog.show(
+            $mdDialog.alert()
+              .parent(angular.element(document.querySelector('#popupContainer')))
+              .clickOutsideToClose(true)
+              .title(title)
+              .textContent(text)
+              .ariaLabel('Alert: '+text)
+              .ok('Ok')
+          );
         }
 
         this.newCourse = function(title, text) {
@@ -189,7 +206,11 @@ angular.
         this.deleteCourse = function (course) {
           $http.get("http://localhost:8080/api?method=delCourse&course_id="+course.id+"&by_user="+this.user.id).then(
             function (response) {
-              console.log(response);
+              self.teachers.forEach(element => {
+                if (element.new_course === course) {
+                  element.new_course === undefined;
+                }
+              });
               if (response.data.key) {
                 self.teachers = self.teachers.filter(function (teacher) {
                   return !(teacher.course === course);
@@ -203,6 +224,34 @@ angular.
 
             }
           );
+        }
+
+        this.updateAssoc = function () {
+          var result = true;
+          var data = self.teachers.filter(function (element){
+            return element.hasOwnProperty("new_course")
+          });
+          
+          data.forEach(element => {
+            $http.get("http://localhost:8080/api?method=updateTeacher&teacher_id="+element.id+"&course_id="+element.new_course.id+"&by_user="+this.user.id).then(
+              function(response) {
+                if (response.data.key) {
+                  result = result & true;
+                }
+                else {
+                  result = result & false;
+                }
+              },
+              function (response) {
+                this.alert("Error", "Check connection then try again");
+              }
+            )
+          });
+
+          if(result)
+            this.alert("All right", "Associations updated successfully");
+          else
+            this.alert("Something has gone wrong", "There was an error updating associations");
         }
 
         this.getHistory();

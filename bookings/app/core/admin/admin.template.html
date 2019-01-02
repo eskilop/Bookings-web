@@ -72,19 +72,16 @@
               {{assoc.name}} {{assoc.surname}} - 
               <md-input-container>
                 <label>Course</label>
-                <md-select ng-model="assoc.course">
-                  <md-option ng-value="assoc.course">{{assoc.course.courseTitle}}</md-option>
-                  <md-option ng-repeat="course in $ctrl.courses" ng-value="course">
+                <md-select ng-model="assoc.new_course">
+                  <md-option ng-if="!(assoc.course === undefined)" ng-value="undefined">{{assoc.course.courseTitle}}</md-option>
+                  <md-option ng-repeat="course in $ctrl.filterCourses(assoc.course)" ng-value="course">
                     {{course.courseTitle}}
                   </md-option>
                 </md-select>
               </md-input-container>
             </ul>
           </div>
-          <div layout="row">
-            <div layout-margin flex="50"><md-button layout-fill class="md-raised md-primary" ng-click="$ctrl.newAssoc()">New Association</md-button></div>
-            <div layout-margin flex="50"><md-button layout-fill class="md-raised md-primary" ng-click="$ctrl.newAssoc()">Confirm</md-button></div>
-          </div>
+            <md-button layout-padding class="md-raised md-primary" ng-click="$ctrl.updateAssoc()">Confirm</md-button>
         </div>
       </div>
     </div>
