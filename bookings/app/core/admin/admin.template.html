@@ -41,38 +41,38 @@
 
           <div layout="column" flex="50">
             <div style="overflow: hidden;overflow-y: scroll;height: 340px;">
-              <ul ng-repeat="teacher in $ctrl.teachers" style="font-size: 18px" ng-click="$ctrl.delete">
-                <md-button class="md-icon-button" aria-label="delete teacher">
+              <ul ng-repeat="teacher in $ctrl.teachers" style="font-size: 18px">
+                <md-button class="md-icon-button" aria-label="delete teacher" ng-click="$ctrl.deleteTeacher(teacher)">
                   <md-icon md-svg-icon="assets/img/round-delete-24px.svg"></md-icon>
                 </md-button>
-                {{teacher}}
+                {{teacher.name}} {{teacher.surname}}
               </ul>
             </div>
-            <md-button class="md-raised md-primary">New Teacher</md-button>
+            <md-button class="md-raised md-primary" ng-click="$ctrl.newTeacher()">New Teacher</md-button>
           </div>
           <div layout="column" flex="50">
-            <div style="overflow: hidden;overflow-y: scroll;height: 340px;" ng-click="$ctrl.delete">
+            <div style="overflow: hidden;overflow-y: scroll;height: 340px;">
               <ul ng-repeat="course in $ctrl.courses" style="font-size: 18px">
-                <md-button class="md-icon-button" aria-label="delete course">
+                <md-button class="md-icon-button" aria-label="delete course" ng-click="$ctrl.deleteCourse(course)">
                   <md-icon md-svg-icon="assets/img/round-delete-24px.svg"></md-icon>
                 </md-button>
-                {{course}}
+                {{course.courseTitle}}
               </ul>
             </div>
-            <md-button class="md-raised md-primary">New Course</md-button>
+            <md-button class="md-raised md-primary" ng-click="$ctrl.newCourse()">New Course</md-button>
           </div>
         </div>
         
         <div layout="column" flex="50">
-          <div style="overflow: hidden;overflow-y: scroll;height: 340px;" ng-click="$ctrl.delete">
-            <ul ng-repeat="assoc in $ctrl.tcassoc" style="font-size: 18px">
-              <md-button class="md-icon-button" aria-label="delete association">
+          <div style="overflow: hidden;overflow-y: scroll;height: 340px;">
+            <ul ng-repeat="assoc in $ctrl.teachers" style="font-size: 18px">
+              <md-button class="md-icon-button" aria-label="delete association" ng-click="$ctrl.deleteAssoc(assoc)">
                 <md-icon md-svg-icon="assets/img/round-delete-24px.svg"></md-icon>
               </md-button>
-              {{assoc.teacher}} {{assoc.course}}
+              {{assoc.name}} {{assoc.surname}} - {{assoc.course.courseTitle}}
             </ul>
           </div>
-          <md-button class="md-raised md-primary">New Association</md-button>
+          <md-button class="md-raised md-primary" ng-click="$ctrl.newAssoc()">New Association</md-button>
         </div>
       </div>
     </div>

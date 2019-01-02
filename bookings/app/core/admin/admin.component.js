@@ -6,9 +6,6 @@ angular.
         var self = this;
 
         this.user = new User($cookies);
-
-        this.teachers = ["Mundani", "Jesus", "ASD", "PLS", "STAHP"];
-        this.courses = ["MATH", "RELIGION", "MEMES", "IT", "COM"];
         this.tcassoc = [{teacher: "ASD", course:"MEMES"}, {teacher: "Jesus", course:"Religion"}, {teacher: "PLS", course:"IT"}, {teacher: "STAHP", course:"COM"}, {teacher: "Mundani", course:"Math"}];
 
 
@@ -50,6 +47,32 @@ angular.
           );
         }
 
+        this.getTeachers = function () {
+          $http.get("http://localhost:8080/api?method=getTeachers").then(
+            function (response) {
+              self.teachers = response.data;
+              self.courses = self.teachers.map(teacher => teacher.course);
+            },
+            function (response) {
+              console.log("error getting teachers");
+            }
+          );
+        }
+
+        this.deleteTeacher = function (teacher) {
+          $http.get("http://localhost:8080/api?method=delTeacher&teacher_id="+teacher.id+"&by_user="+this.user.id).then(
+            function (response) {
+              if (response.data.key) {
+                this.teachers.remove(teacher);
+              }
+            },
+            function (response) {
+
+            }
+          );
+        }
+
         this.getHistory();
+        this.getTeachers();
       }]
     });
