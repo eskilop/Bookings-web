@@ -85,9 +85,9 @@ public class Model
       {
         build ();
 
-        Role admin = new Role ("Administrator");
+        Role admin = new Role (Role.ADMINISTRATOR, "Administrator");
         admin.save ();
-        Role client = new Role ("Client");
+        Role client = new Role (Role.CLIENT, "Client");
         client.save ();
 
         // Demo purposes only, clearly unsecured

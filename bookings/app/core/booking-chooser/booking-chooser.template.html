@@ -15,7 +15,7 @@
           <md-icon md-svg-icon="assets/img/round-security-24px.svg"></md-icon>
         </md-button>
   
-      <h4 ng-show="$ctrl.user.isLogged()">Hi, {{$ctrl.user.username}}</h4>
+      <h4 ng-show="$ctrl.user.isLogged()">{{$ctrl.user.username}}</h4>
 
       <md-button ng-click="$ctrl.toLogin()" ng-show="!$ctrl.user.isLogged()" class="md-icon-button" aria-label="Login">
         <md-icon md-svg-icon="assets/img/round-account_circle-24px.svg"></md-icon>

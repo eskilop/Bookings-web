@@ -18,7 +18,7 @@ component('bookingChooser', {
       // get all courses
       self.bookings.forEach(bkng => {
         var curr = bkng.booking_from.course.courseTitle;
-        if (!(curr === self.courses[self.courses.length-1])) {
+        if (!(self.courses.includes(curr))) {
           self.courses.push(curr);
         }
       });
@@ -27,7 +27,7 @@ component('bookingChooser', {
       self.bookings.forEach(bkng => {
         var curr = bkng.booking_from.name + " " + bkng.booking_from.surname;
         bkng.completeName = curr;
-        if (!(curr === self.teachers[self.teachers.length-1])) {
+        if (!(self.teachers.includes(curr))) {
           self.teachers.push(curr);
         }
       });

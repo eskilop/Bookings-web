@@ -1,0 +1,28 @@
+<md-dialog aria-label="Teacher input dialog" layout-padding>
+  <div layout-padding><h3>Create a new teacher</h3></div>
+  <md-dialog-content>
+      <div class="md-dialog-content" layout="column">
+        <md-input-container>
+          <label>Teacher Name</label>
+          <input ng-model="teacher.name">
+        </md-input-container>
+        <md-input-container>
+          <label>Teacher Surname</label>
+          <input ng-model="teacher.surname">
+        </md-input-container>
+        <md-input-container>
+          <label>Teacher Course</label>
+          <md-select ng-model="teacher.course">
+            <md-option ng-value="null">None</md-option>
+            <md-option ng-repeat="course in courses" ng-value="course">
+              {{course.courseTitle}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+      </div>
+  </md-dialog-content>
+  <md-dialog-actions layout="row">
+      <md-button ng-click="cancel()" class="md-primary" aria-label="cancel">Cancel</md-button>
+    <md-button ng-click="answer(teacher)" class="md-primary" aria-label="okay">Okay</md-button>
+  </md-dialog-actions>
+</md-dialog>

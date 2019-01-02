@@ -38,12 +38,12 @@ public class History extends BookingsImplementation
       {
         exec ("CREATE TABLE IF NOT EXISTS `" + DB_NAME + "`.`history` ( \n" +
             "    `history_id` INT NOT NULL AUTO_INCREMENT , \n" +
-            "    `booking_id` INT NOT NULL , \n" +
+            "    `booking_id` INT, \n" +
             "    `booked_by` INT NOT NULL , \n" +
             "    `booking_state` INT NOT NULL , \n" +
             "    `action_date` TIMESTAMP NOT NULL,\n" +
             "    PRIMARY KEY(`history_id`),\n" +
-            "    FOREIGN KEY(`booking_id`) REFERENCES `bookings`(`booking_id`),\n" +
+            "    FOREIGN KEY(`booking_id`) REFERENCES `bookings`(`booking_id`) ON DELETE SET NULL,\n" +
             "    FOREIGN KEY(`booked_by`) REFERENCES `users`(`user_id`),\n" +
             "    FOREIGN KEY(`booking_state`) REFERENCES `states`(`state_id`)\n" +
             ") ENGINE = InnoDB;");

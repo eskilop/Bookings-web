@@ -39,7 +39,7 @@ public class Booking extends BookingsImplementation
             "    `booking_date` TIMESTAMP NOT NULL,\n" +
             "    `booking_state` INT NOT NULL,\n" +
             "    PRIMARY KEY(`booking_id`),\n" +
-            "    FOREIGN KEY(`booking_from`) REFERENCES `teachers`(`teacher_id`),\n" +
+            "    FOREIGN KEY(`booking_from`) REFERENCES `teachers`(`teacher_id`) ON DELETE CASCADE,\n" +
             "    FOREIGN KEY(`booking_state`) REFERENCES `states`(`state_id`)\n" +
             ") ENGINE = InnoDB;");
       }

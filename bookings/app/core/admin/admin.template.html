@@ -59,7 +59,7 @@
                 {{course.courseTitle}}
               </ul>
             </div>
-            <md-button class="md-raised md-primary" ng-click="$ctrl.newCourse()">New Course</md-button>
+            <md-button class="md-raised md-primary" ng-click="$ctrl.newCourse('Create a new course', 'choose a name')">New Course</md-button>
           </div>
         </div>
         
@@ -69,10 +69,22 @@
               <md-button class="md-icon-button" aria-label="delete association" ng-click="$ctrl.deleteAssoc(assoc)">
                 <md-icon md-svg-icon="assets/img/round-delete-24px.svg"></md-icon>
               </md-button>
-              {{assoc.name}} {{assoc.surname}} - {{assoc.course.courseTitle}}
+              {{assoc.name}} {{assoc.surname}} - 
+              <md-input-container>
+                <label>Course</label>
+                <md-select ng-model="assoc.course">
+                  <md-option ng-value="assoc.course">{{assoc.course.courseTitle}}</md-option>
+                  <md-option ng-repeat="course in $ctrl.courses" ng-value="course">
+                    {{course.courseTitle}}
+                  </md-option>
+                </md-select>
+              </md-input-container>
             </ul>
           </div>
-          <md-button class="md-raised md-primary" ng-click="$ctrl.newAssoc()">New Association</md-button>
+          <div layout="row">
+            <div layout-margin flex="50"><md-button layout-fill class="md-raised md-primary" ng-click="$ctrl.newAssoc()">New Association</md-button></div>
+            <div layout-margin flex="50"><md-button layout-fill class="md-raised md-primary" ng-click="$ctrl.newAssoc()">Confirm</md-button></div>
+          </div>
         </div>
       </div>
     </div>

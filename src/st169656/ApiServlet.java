@@ -99,6 +99,10 @@ public class ApiServlet extends HttpServlet
               writeJSON (resp, Teacher.search ("SELECT * FROM teachers;"));
               break;
 
+            case "getCourses":
+              writeJSON (resp, Course.search ("SELECT * FROM courses;"));
+              break;
+
             case "updateTeacher":
               int teacher_id = Integer.valueOf (req.getParameter ("teacher_id"));
               objId = Integer.valueOf (req.getParameter ("course_id"));
@@ -156,7 +160,7 @@ public class ApiServlet extends HttpServlet
 
             case "newCourse":
               userId = Integer.valueOf (req.getParameter ("by_user"));
-              Course newCourse = new Gson ().fromJson (raw_data, Course.class);
+              Course newCourse = new Course (new Gson ().fromJson (raw_data, Course.class).getCourseTitle ());
               writeJSON (resp, checkAndSave (userId, newCourse));
               break;
           }

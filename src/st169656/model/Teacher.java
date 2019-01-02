@@ -36,9 +36,11 @@ public class Teacher extends BookingsImplementation
             "    `teacher_id` INT NOT NULL AUTO_INCREMENT , \n" +
             "    `teacher_name` TEXT NOT NULL , \n" +
             "    `teacher_surname` TEXT NOT NULL , \n" +
-            "    `teacher_course` INT NOT NULL , \n" +
+            "    `teacher_course` INT, \n" +
             "    PRIMARY KEY (`teacher_id`),\n" +
-            "    FOREIGN KEY (`teacher_course`) REFERENCES `courses`(course_id)) ENGINE = InnoDB;");
+            "    FOREIGN KEY (`teacher_course`) REFERENCES `courses`(course_id) " +
+            "    ON DELETE SET NULL" +
+            ") ENGINE = InnoDB;");
       }
 
     public static void destroy ()
