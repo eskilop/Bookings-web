@@ -26,6 +26,7 @@ public class ApiServlet extends HttpServlet
      */
 
     private Model m = Model.getInstance ();
+    private boolean debug = true;
 
     @Override
     protected void doGet (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
@@ -48,10 +49,7 @@ public class ApiServlet extends HttpServlet
             case "book":
               userId = Integer.valueOf (req.getParameter ("by_user"));
               if (m.isLogged (userId))
-                {
-                  book (Integer.valueOf (req.getParameter ("booking_id")), userId);
-                  writeJSON (resp, new Pair <> (true, "Booking booked correctly"));
-                }
+                writeJSON (resp, new Pair <> (true, book (Integer.valueOf (req.getParameter ("booking_id")), userId)));
               else
                 writeJSON (resp, new Pair <> (false, "User is not logged in"));
               break;
@@ -191,28 +189,32 @@ public class ApiServlet extends HttpServlet
     private ArrayList <Booking> getBookingsForUser (int user_id)
       {
         return Booking.search (
-            "select * from bookings where bookings.booking_date >= CURRENT_TIMESTAMP and bookings.booking_date not in\n" +
-                "(\n" +
-                "    select b.booking_date from bookings b where booking_id in\n" +
-                "    (\n" +
-                "        select h.booking_id from history h where h.booking_id not in\n" +
-                "        (\n" +
-                "           select distinct h1.booking_id\n" +
-                "           from history h1 inner join history h2 on \n" +
-                "            (h1.booking_id = h2.booking_id and h1.booking_state = 1 and h2.booking_state = 3 and h1.booked_by = " + user_id + ")\n" +
+            "-- tutte quelle libere\n" +
+                "select b.* from bookings b\n" +
+                "where \n" +
+                "\tb.booking_state = 4 and \n" +
+                "    b.booking_date > CURRENT_TIMESTAMP and\n" +
+                "    b.booking_date not in (\n" +
+                "        -- ma non mostrare le stesse date dove io ho già prenotato\n" +
+                "        select b1.booking_date\n" +
+                "        from bookings b1 join history h on (\n" +
+                "            b1.booking_id = h.booking_id and -- cerchiamo una prenotazione\n" +
+                "            h.booked_by = " + user_id + " and -- da \"me\"\n" +
+                "            h.booking_state = 1 and -- che sia prenotata\n" +
+                "            b1.booking_state = 1\n" +
                 "        )\n" +
-                "    )\n" +
-                ");"
+                "\t)"
         );
       }
 
-    private void book (int booking_id, int user_id)
+    private History book (int booking_id, int user_id)
       {
         History newEntry = new History (booking_id, user_id, State.BOOKED, new Timestamp (new Date ().getTime ()));
         Booking booked = Booking.get (booking_id);
         booked.setState (State.BOOKED);
         booked.save ();
         newEntry.save ();
+        return newEntry;
       }
 
     private History unBook (int booking_id, int user_id)
@@ -228,7 +230,9 @@ public class ApiServlet extends HttpServlet
     private <T> void writeJSON (HttpServletResponse resp, T something) throws IOException
       {
         Gson gson = new Gson ();
-        resp.getWriter ().write (gson.toJson (something));
+        String result = gson.toJson (something);
+        if (debug) System.out.println (result);
+        resp.getWriter ().write (result);
       }
 
     private ArrayList <History> getPastBookings (int user_id)

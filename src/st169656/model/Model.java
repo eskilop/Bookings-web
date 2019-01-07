@@ -44,15 +44,14 @@ public class Model
 
     public void removeLogged (int user)
       {
-        loggedUsers.remove (user);
+        if (isLogged (user))
+          loggedUsers.remove (loggedUsers.indexOf (user));
       }
 
     public void addLogged (int user)
       {
-        if (! loggedUsers.contains (user))
-          {
-            loggedUsers.add (user);
-          }
+        if (! isLogged (user))
+          loggedUsers.add (user);
       }
 
     public void build ()
