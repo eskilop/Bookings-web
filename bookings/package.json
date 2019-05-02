@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Bookings project for university's web technologies course",
   "author": "Luca D'Amato <eskilop@eskilop.it>",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://gitlab.com/Eskilop/webbookings.git"
