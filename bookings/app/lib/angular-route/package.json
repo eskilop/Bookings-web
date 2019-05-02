@@ -1,27 +1,32 @@
 {
-  "_from": "angular-route@1.7.x",
+  "_args": [
+    [
+      "angular-route@1.7.5",
+      "/Users/eskilop/Desktop/SCUOLA/IUMTWEB/progetto/bookings"
+    ]
+  ],
+  "_from": "angular-route@1.7.5",
   "_id": "angular-route@1.7.5",
   "_inBundle": false,
   "_integrity": "sha512-7KfyEVVOWTI+jTY/j5rUNCIHGRyeCOx7YqZI/Ci3IbDK7GIsy6xH+hS5ai0Xi0sLjzDZ0PUDO4gBn+K0dVtlOg==",
   "_location": "/angular-route",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "angular-route@1.7.x",
+    "raw": "angular-route@1.7.5",
     "name": "angular-route",
     "escapedName": "angular-route",
-    "rawSpec": "1.7.x",
+    "rawSpec": "1.7.5",
     "saveSpec": null,
-    "fetchSpec": "1.7.x"
+    "fetchSpec": "1.7.5"
   },
   "_requiredBy": [
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/angular-route/-/angular-route-1.7.5.tgz",
-  "_shasum": "34a3648c407a14a030d075cf485318e33ba23f0e",
-  "_spec": "angular-route@1.7.x",
-  "_where": "/Users/eskilop/Desktop/SCUOLA/TWEB/progetto/bookings",
+  "_spec": "1.7.5",
+  "_where": "/Users/eskilop/Desktop/SCUOLA/IUMTWEB/progetto/bookings",
   "author": {
     "name": "Angular Core Team",
     "email": "angular-core+npm@google.com"
@@ -29,8 +34,6 @@
   "bugs": {
     "url": "https://github.com/angular/angular.js/issues"
   },
-  "bundleDependencies": false,
-  "deprecated": false,
   "description": "AngularJS router module",
   "homepage": "http://angularjs.org",
   "jspm": {

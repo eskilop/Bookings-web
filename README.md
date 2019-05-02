@@ -2,22 +2,24 @@
 2018/2019 Web technologies university project made with angularjs + java servlet.
 
 # How to start
-```
+Start tomcat and mysql, you may need to tweak parameters in `src/st169656/dao/BookingsImplementation.java` then:
+
+```bash
 cd bookings/
 npm install && npm run start
 ```
 
 # Screenshots
-<img src="./screenshots/webbookings_1.png" style="width: 30%"/>
-<img src="./screenshots/webbookings_2.png" style="width: 30%"/>
-<img src="./screenshots/webbookings_3.png" style="width: 30%"/>
-<img src="./screenshots/webbookings_4.png" style="width: 30%"/>
-<img src="./screenshots/webbookings_5.png" style="width: 30%"/>
-<img src="./screenshots/webbookings_6.png" style="width: 30%"/>
-<img src="./screenshots/webbookings_7.png" style="width: 30%"/>
-<img src="./screenshots/webbookings_8.png" style="width: 30%"/>
-<img src="./screenshots/webbookings_9.png" style="width: 30%"/>
-<img src="./screenshots/webbookings_10.png" style="width: 30%"/>
+<img src="./screenshots/webbookings_1.png" style="width: 30%; height:30%;"/>
+<img src="./screenshots/webbookings_2.png" style="width: 30%; height:30%;"/>
+<img src="./screenshots/webbookings_3.png" style="width: 30%; height:30%;"/>
+<img src="./screenshots/webbookings_4.png" style="width: 30%; height:30%;"/>
+<img src="./screenshots/webbookings_5.png" style="width: 30%; height:30%;"/>
+<img src="./screenshots/webbookings_6.png" style="width: 30%; height:30%;"/>
+<img src="./screenshots/webbookings_7.png" style="width: 30%; height:30%;"/>
+<img src="./screenshots/webbookings_8.png" style="width: 30%; height:30%;"/>
+<img src="./screenshots/webbookings_9.png" style="width: 30%; height:30%;"/>
+<img src="./screenshots/webbookings_10.png" style="width: 30%; height:30%;"/>
 
 # License
 ```
