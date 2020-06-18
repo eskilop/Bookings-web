@@ -13,7 +13,7 @@
     "url": "https://gitlab.com/Eskilop/webbookings/issues"
   },
   "dependencies": {
-    "angular": "1.7.x",
+    "angular": "1.8.x",
     "angular-mocks": "1.7.x",
     "angular-route": "1.7.x",
     "bootstrap": "3.3.x"
